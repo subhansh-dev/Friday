@@ -1066,6 +1066,36 @@ friday/
 
 ---
 
+## 📲 Telegram Bridge Setup
+
+FRIDAY can send and receive Telegram messages via your own personal bot — fully two-way.
+
+### Step 1 — Create your Telegram bot
+
+1. Open Telegram and search for **@BotFather**
+2. Send `/newbot`
+3. Follow the prompts to name your bot
+4. BotFather will give you a token like `7xxxxxxxxx:AAF...` — copy it
+
+### Step 2 — Get your User ID
+
+1. Search **@userinfobot** on Telegram
+2. Send any message
+3. It will reply with your numeric User ID
+
+### Step 3 — Configure telegram\_bot.py
+
+Open `Config\api_keys` and fill in your credentials:
+
+```python
+BOT_TOKEN = "your_bot_token_here"
+ALLOWED_USER = your_user_id_here  # just the number, no quotes
+```
+### Step 4 — Test it
+
+Send a message to your bot on Telegram and FRIDAY will respond. You can also tell JARVIS by voice to send you a Telegram message and it will push it to your phone.
+
+
 ## 📦 Installation
 
 ### Prerequisites
@@ -1079,34 +1109,53 @@ friday/
 
 ### Quick Start
 
+### Step 1 — Clone the repository
+
 ```bash
-# 1. Clone
-git clone https://github.com/subhansh-dev/Friday.git
+git clone https://github.com/subhansh-dev/Friday-Autonomous-Cognitive-AI-Operating-System
 cd Friday
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Install Playwright (for browser automation)
-playwright install chromium
-
-# 4. Configure API key
-# Edit config/api_keys.json with your Gemini API key
-
-# 5. Run
-python main.py
 ```
 
-### API Key Configuration
+### Step 2 — Create a virtual environment
+
+```bash
+python -m venv jarvis_env
+Friday_env\Scripts\activate
+```
+
+### Step 3 — Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Step 4 — Install Playwright browsers
+
+```bash
+playwright install
+playwright install chromium
+```
+
+### Step 5 — Set up your config
+
+ open `config/api_keys.json` and fill in your details:
 
 ```json
 {
-  "primary_provider": "gemini",
-  "gemini_api_key": "YOUR_KEY_HERE"
+    "gemini_api_key": "YOUR_GEMINI_API_KEY_HERE",
+    "os_system": "windows"
 }
 ```
 
-Get a key from [Google AI Studio](https://aistudio.google.com).
+You can get a free Gemini API key at [aistudio.google.com](https://aistudio.google.com/app/apikey).
+
+### Step 6 — Launch FRIDAY
+
+```bash
+python main.py
+```
+
+On first launch, FRIDAY will open a setup window where you can enter your API key and select your OS. After that it boots automatically every time.
 
 ---
 
