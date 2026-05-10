@@ -75,7 +75,7 @@
 
 ## 🌟 About F.R.I.D.A.Y
 
-**F.R.I.D.A.Y.** is a next-generation **Autonomous Cognitive AI Assistant** — not a chatbot, not a wrapper around an API. A full cognitive architecture with real-time voice interaction, 14 brain modules, 56 tool actions, advanced cybersecurity pipelines, neural memory systems, and autonomous decision-making.
+**F.R.I.D.A.Y.** is a next-generation **Autonomous Cognitive AI Operating System** — not a chatbot, not a wrapper around an API. A full cognitive architecture with real-time voice interaction, 14 brain modules, 56 tool actions, advanced cybersecurity pipelines, neural memory systems, and autonomous decision-making.
 
 **81,500+ lines of Python. 162 source files. Zero shortcuts.** *(~101,000 lines total counting everything — configs, docs, assets, the works.)*
 
