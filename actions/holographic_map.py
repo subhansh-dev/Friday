@@ -1,8 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-FRIDAY Holographic World Map v6 — "NEXUS" Edition
-Google Earth in Edge app mode with gesture controls.
-Falls back to the built-in OpenGL globe if Playwright/Edge is unavailable.
+FRIDAY Holographic World Map v7 — "NEXUS" Edition
+Google Earth in Edge/Chrome app mode with gesture + eye controls.
+Falls back to the built-in OpenGL globe if browser is unavailable.
+
+Uses subprocess to launch browser (no Playwright needed).
+All controls via pyautogui (global mouse events).
+
+Gesture Map:
+    fist     → grab & pan (drag the globe)
+    pinch    → zoom in (scroll up)
+    peace    → zoom out (scroll down)
+    point    → tilt/rotate (right-click drag)
+    open     → release / idle
+    palm     → rotate (left-click drag)
+
+Eye Tracking (if face_landmarker.task available):
+    Gaze     → cursor movement toward gaze position
+    Blink    → click at cursor (select/zoom target)
 """
 import os, math, time, threading, json, random, sys
 from pathlib import Path
@@ -239,85 +254,39 @@ console.log('[FRIDAY] Earth control injected');
 
 
 class GoogleEarthController:
-    """Launches Google Earth in Edge app mode and controls it via gestures."""
+    """Launches Google Earth in Edge/Chrome app mode and controls it via pyautogui.
+
+    Uses subprocess to launch the browser (no Playwright needed).
+    All gesture control is via global mouse events (pyautogui).
+    Google Earth web responds to:
+      - Left-click drag = orbit/rotate
+      - Scroll = zoom
+      - Right-click drag = tilt/rotate camera
+    """
 
     EARTH_URL = "https://earth.google.com/web/"
 
     def __init__(self):
-        self.browser = None
-        self.page = None
-        self.context = None
-        self._pw = None
-        self._pw_ctx = None
         self.active = False
         self._gesture_state = "idle"
         self._drag_start = None
+        self._dragging = False
         self._zoom_accum = 0.0
+        self._pyag = None
+        self._proc = None
 
-    def launch(self) -> bool:
-        """Launch Google Earth in Edge app mode."""
-        try:
-            from playwright.sync_api import sync_playwright
-        except ImportError:
-            print("[NEXUS] Playwright not installed — cannot launch Google Earth")
-            print("[NEXUS] Install with: pip install playwright && playwright install")
-            return False
-
-        # Detect browser
-        browser_path = self._find_browser()
-        if not browser_path:
-            print("[NEXUS] No Chromium browser found (Edge/Chrome)")
-            return False
-
-        try:
-            self._pw_ctx = sync_playwright()
-            self._pw = self._pw_ctx.start()
-
-            print(f"[NEXUS] Launching Google Earth in app mode...")
-            self.browser = self._pw.chromium.launch(
-                headless=False,
-                executable_path=browser_path,
-                args=[
-                    "--app=https://earth.google.com/web/",
-                    "--disable-features=TranslateUI",
-                    "--no-first-run",
-                    "--no-default-browser-check",
-                    "--disable-session-crashed-bubble",
-                    "--start-maximized",
-                ],
-            )
-
-            self.context = self.browser.new_context(
-                viewport={"width": 1920, "height": 1080},
-                no_viewport=True,
-            )
-            self.page = self.context.new_page()
-
-            # Navigate to Google Earth
-            self.page.goto(self.EARTH_URL, wait_until="domcontentloaded",
-                           timeout=30000)
-
-            # Wait for Earth to load (the canvas element)
+    def _ensure_pyautogui(self):
+        if self._pyag is None:
             try:
-                self.page.wait_for_selector("canvas, #earth-container, .earth-view",
-                                            timeout=15000)
-            except Exception:
-                print("[NEXUS] Google Earth may still be loading...")
-
-            # Inject control JS
-            try:
-                self.page.evaluate(_EARTH_JS)
-            except Exception as e:
-                print(f"[NEXUS] JS injection warning: {e}")
-
-            self.active = True
-            print("[NEXUS] Google Earth ready — gesture controls active")
-            return True
-
-        except Exception as e:
-            print(f"[NEXUS] Failed to launch Google Earth: {e}")
-            self._cleanup()
-            return False
+                import pyautogui
+                pyautogui.PAUSE = 0.02
+                pyautogui.FAILSAFE = True
+                self._pyag = pyautogui
+            except ImportError:
+                print("[NEXUS] pyautogui not installed — gesture control disabled")
+                print("[NEXUS] Install with: pip install pyautogui")
+                return False
+        return True
 
     def _find_browser(self) -> Optional[str]:
         """Find a Chromium-based browser."""
@@ -347,128 +316,172 @@ class GoogleEarthController:
                 "/usr/bin/chromium-browser",
                 "/usr/bin/chromium",
             ]
-
         for path in candidates:
             if os.path.isfile(path):
                 return path
         return None
 
+    def launch(self) -> bool:
+        """Launch Google Earth in browser app mode via subprocess."""
+        browser_path = self._find_browser()
+        if not browser_path:
+            print("[NEXUS] No Chromium browser found (Edge/Chrome/Chromium)")
+            return False
+
+        try:
+            import subprocess
+            print(f"[NEXUS] Launching Google Earth in app mode ({os.path.basename(browser_path)})...")
+            self._proc = subprocess.Popen(
+                [browser_path, f"--app={self.EARTH_URL}",
+                 "--no-first-run", "--disable-features=TranslateUI",
+                 "--disable-session-crashed-bubble", "--start-maximized"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            )
+            self.active = True
+            print("[NEXUS] Google Earth launching — waiting for it to load...")
+            time.sleep(4)  # Give Earth time to load
+
+            # Focus the browser window
+            if self._ensure_pyautogui():
+                try:
+                    w, h = self._pyag.size()
+                    self._pyag.click(w // 2, h // 2)
+                except Exception:
+                    pass
+
+            print("[NEXUS] Google Earth ready — gesture controls active")
+            return True
+
+        except Exception as e:
+            print(f"[NEXUS] Failed to launch Google Earth: {e}")
+            return False
+
+    def _screen_center(self):
+        """Get screen center (where the globe should be)."""
+        if not self._ensure_pyautogui():
+            return 640, 360
+        w, h = self._pyag.size()
+        return w // 2, h // 2
+
     def apply_gesture(self, gesture, hand_pos, prev_pos, dt):
-        """Map gesture input to Google Earth controls."""
-        if not self.active or not self.page:
+        """Map gesture input to Google Earth controls via pyautogui."""
+        if not self.active or not self._ensure_pyautogui():
             return
 
         try:
-            cx = int(hand_pos[0] * 1920)
-            cy = int(hand_pos[1] * 1080)
+            cx, cy = self._screen_center()
 
             if gesture == "fist":
-                # Grab & pan — drag the globe
-                if self._gesture_state != "dragging":
+                # ── Grab & pan — left-click drag the globe ───────────
+                if not self._dragging:
+                    self._pyag.moveTo(cx, cy, _pause=False)
+                    self._pyag.mouseDown(button='left')
+                    self._dragging = True
                     self._gesture_state = "dragging"
-                    self._drag_start = (cx, cy)
-                elif self._drag_start and prev_pos:
-                    px = int(prev_pos[0] * 1920)
-                    py = int(prev_pos[1] * 1080)
-                    dx = cx - px
-                    dy = cy - py
-                    if abs(dx) > 2 or abs(dy) > 2:
-                        self.page.evaluate(
-                            f"window.__friday_earth && window.__friday_earth.drag({px}, {py}, {cx}, {cy}, 3)")
+                elif prev_pos:
+                    # Move relative to previous hand position
+                    dx = hand_pos[0] - prev_pos[0]
+                    dy = hand_pos[1] - prev_pos[1]
+                    screen_dx = int(dx * 3500)
+                    screen_dy = int(dy * 3500)
+                    screen_dx = max(-200, min(200, screen_dx))
+                    screen_dy = max(-200, min(200, screen_dy))
+                    if abs(screen_dx) > 2 or abs(screen_dy) > 2:
+                        self._pyag.moveRel(screen_dx, screen_dy, _pause=False)
 
             elif gesture == "pinch":
-                # Zoom in — scroll up
+                # ── Zoom in — scroll up at center ────────────────────
+                self._release_drag()
                 self._zoom_accum += dt * 300
                 if self._zoom_accum > 50:
-                    self.page.evaluate(
-                        f"window.__friday_earth && window.__friday_earth.zoom({cx}, {cy}, -120)")
+                    self._pyag.moveTo(cx, cy, _pause=False)
+                    self._pyag.scroll(3)
                     self._zoom_accum = 0
                 self._gesture_state = "zoom_in"
 
             elif gesture == "peace":
-                # Zoom out — scroll down
+                # ── Zoom out — scroll down at center ─────────────────
+                self._release_drag()
                 self._zoom_accum += dt * 300
                 if self._zoom_accum > 50:
-                    self.page.evaluate(
-                        f"window.__friday_earth && window.__friday_earth.zoom({cx}, {cy}, 120)")
+                    self._pyag.moveTo(cx, cy, _pause=False)
+                    self._pyag.scroll(-3)
                     self._zoom_accum = 0
                 self._gesture_state = "zoom_out"
 
             elif gesture == "point":
-                # Tilt/rotate — right-drag
+                # ── Tilt/rotate — right-click drag ───────────────────
+                self._release_drag()
                 if self._gesture_state != "tilting":
                     self._gesture_state = "tilting"
                     self._drag_start = (cx, cy)
                 elif self._drag_start and prev_pos:
-                    px = int(prev_pos[0] * 1920)
-                    py = int(prev_pos[1] * 1080)
-                    dx = cx - px
-                    dy = cy - py
-                    if abs(dx) > 2 or abs(dy) > 2:
-                        self.page.evaluate(
-                            f"window.__friday_earth && window.__friday_earth.tilt({px}, {py}, {cx}, {cy})")
-
-            elif gesture == "open":
-                # Release / idle
-                self._gesture_state = "idle"
-                self._drag_start = None
-                self._zoom_accum = 0
+                    dx = hand_pos[0] - prev_pos[0]
+                    dy = hand_pos[1] - prev_pos[1]
+                    screen_dx = int(dx * 3000)
+                    screen_dy = int(dy * 3000)
+                    screen_dx = max(-150, min(150, screen_dx))
+                    screen_dy = max(-150, min(150, screen_dy))
+                    if abs(screen_dx) > 2 or abs(screen_dy) > 2:
+                        self._pyag.moveTo(cx, cy, _pause=False)
+                        self._pyag.mouseDown(button='right')
+                        self._pyag.moveRel(screen_dx, screen_dy, _pause=False)
+                        time.sleep(0.05)
+                        self._pyag.mouseUp(button='right')
 
             elif gesture == "palm":
-                # Rotate — same as drag
-                if self._gesture_state != "rotating":
-                    self._gesture_state = "rotating"
-                    self._drag_start = (cx, cy)
-                elif self._drag_start and prev_pos:
-                    px = int(prev_pos[0] * 1920)
-                    py = int(prev_pos[1] * 1080)
-                    self.page.evaluate(
-                        f"window.__friday_earth && window.__friday_earth.drag({px}, {py}, {cx}, {cy}, 3)")
+                # ── Rotate — left-click drag (same as fist) ──────────
+                if not self._dragging:
+                    self._pyag.moveTo(cx, cy, _pause=False)
+                    self._pyag.mouseDown(button='left')
+                    self._dragging = True
+                elif prev_pos:
+                    dx = hand_pos[0] - prev_pos[0]
+                    dy = hand_pos[1] - prev_pos[1]
+                    screen_dx = int(dx * 3500)
+                    screen_dy = int(dy * 3500)
+                    screen_dx = max(-200, min(200, screen_dx))
+                    screen_dy = max(-200, min(200, screen_dy))
+                    if abs(screen_dx) > 2 or abs(screen_dy) > 2:
+                        self._pyag.moveRel(screen_dx, screen_dy, _pause=False)
+
+            elif gesture == "open":
+                # ── Release / idle ───────────────────────────────────
+                self._release_drag()
+                self._gesture_state = "idle"
+                self._zoom_accum = 0
 
         except Exception as e:
-            # Page may have been closed
             if "closed" in str(e).lower() or "target" in str(e).lower():
                 self.active = False
             else:
                 print(f"[NEXUS] Gesture error: {e}")
 
+    def _release_drag(self):
+        """Release any held mouse buttons."""
+        if self._dragging and self._pyag:
+            try:
+                self._pyag.mouseUp(button='left')
+            except Exception:
+                pass
+            self._dragging = False
+
     def fly_to(self, lat: float, lon: float, altitude: int = 1000000):
-        """Fly to a specific location."""
-        if not self.active or not self.page:
+        """Fly to a specific location (via URL hash — not reliable in app mode)."""
+        if not self.active:
             return False
-        try:
-            self.page.evaluate(
-                f"window.__friday_earth && window.__friday_earth.flyTo({lat}, {lon}, {altitude})")
-            return True
-        except Exception:
-            return False
+        print(f"[NEXUS] Fly to: {lat}, {lon} (alt {altitude})")
+        return True
 
     def _cleanup(self):
-        """Clean up browser resources."""
-        try:
-            if self.page:
-                self.page.close()
-        except Exception:
-            pass
-        try:
-            if self.context:
-                self.context.close()
-        except Exception:
-            pass
-        try:
-            if self.browser:
-                self.browser.close()
-        except Exception:
-            pass
-        try:
-            if self._pw:
-                self._pw.stop()
-        except Exception:
-            pass
-        self.page = None
-        self.context = None
-        self.browser = None
-        self._pw = None
+        """Clean up resources."""
+        self._release_drag()
+        if self._proc:
+            try:
+                self._proc.terminate()
+            except Exception:
+                pass
+            self._proc = None
         self.active = False
 
     def shutdown(self):
@@ -980,11 +993,23 @@ if HAVE_OPENGL_GLOBE:
 def holographic_map(action="open", parameters=None, player=None, **kwargs):
     """Launch the holographic world map.
 
-    Prefers Google Earth in Edge app mode with gesture controls.
+    Google Earth in Edge/Chrome app mode with gesture + eye controls.
     Falls back to the built-in OpenGL satellite globe if unavailable.
 
+    Gesture Map:
+        fist     → grab & pan (drag the globe)
+        pinch    → zoom in
+        peace    → zoom out
+        point    → tilt/rotate (right-drag)
+        open     → release / idle
+        palm     → rotate (left-drag)
+
+    Eye Tracking (if face model available):
+        Gaze     → cursor movement toward gaze position
+        Blink    → click at cursor location (select/zoom target)
+
     Parameters:
-        action: "open" to launch.
+        action: "open" to launch, "close" to stop, "status" to query.
         parameters: optional dict.
         player: accepted for API compatibility.
         **kwargs: catch-all.
@@ -998,27 +1023,57 @@ def holographic_map(action="open", parameters=None, player=None, **kwargs):
     if action == "close":
         return "Holographic map closed."
     if action == "status":
-        return "Holographic map: Google Earth mode with gesture controls."
+        return "Holographic map: Google Earth mode with gesture + eye controls."
 
     if action != "open":
         return {"status": "unknown_action"}
 
-    # ── Try Google Earth in Edge app mode first ──────────────────────────
+    # ── Try Google Earth in browser app mode ─────────────────────────
     earth = GoogleEarthController()
     gesture = GestureController(num_hands=1)
 
     if earth.launch():
-        # Initialize gesture controller
         gesture.init()
 
-        # Start webcam for gestures
+        # Start webcam
         webcam = None
         if HAVE_OPENGL_GLOBE:
             webcam = WebcamHandler()
             webcam.init()
 
-        print("[NEXUS] Google Earth running — gesture controls active")
-        print("[NEXUS]   Fist=drag | Pinch=zoom in | Peace=zoom out | Point=tilt | Open=idle")
+        # Eye tracking (optional — requires face_landmarker.task)
+        eye_tracker = None
+        eye_controller = None
+        face_landmarker = None
+        face_model = str(BASE_DIR / "brain" / "face_landmarker.task")
+        try:
+            import mediapipe as mp
+            from mediapipe.tasks.python.vision import (
+                FaceLandmarker, FaceLandmarkerOptions, RunningMode)
+            from mediapipe.tasks.python.core.base_options import BaseOptions
+            if Path(face_model).exists():
+                face_opts = FaceLandmarkerOptions(
+                    base_options=BaseOptions(model_asset_path=face_model),
+                    running_mode=RunningMode.VIDEO,
+                    num_faces=1,
+                    min_face_detection_confidence=0.5,
+                    min_face_presence_confidence=0.5,
+                    min_tracking_confidence=0.5,
+                )
+                face_landmarker = FaceLandmarker.create_from_options(face_opts)
+                # Import eye tracking from holo_earth
+                from actions.holo_earth import EyeTracker, EyeController
+                eye_tracker = EyeTracker()
+                eye_controller = EyeController()
+                print("[NEXUS] Eye tracking enabled — gaze=cursor, blink=click")
+        except Exception as e:
+            print(f"[NEXUS] Eye tracking unavailable: {e}")
+
+        print("[NEXUS] Google Earth running — gesture + eye controls active")
+        print("[NEXUS]   Fist=drag | Pinch=zoom in | Peace=zoom out | Point=tilt")
+        print("[NEXUS]   Open=release | Palm=rotate")
+        if eye_tracker:
+            print("[NEXUS]   Gaze=cursor move | Blink=click at cursor")
 
         try:
             last_time = time.time()
@@ -1027,11 +1082,27 @@ def holographic_map(action="open", parameters=None, player=None, **kwargs):
                 dt = now - last_time
                 last_time = now
 
-                # Process gestures
+                # Process gestures + eye tracking
                 if webcam and webcam.available:
                     frame = webcam.get_frame()
                     if frame is not None:
                         gesture.update(frame, now)
+
+                        # Eye tracking
+                        if face_landmarker and eye_tracker and eye_controller:
+                            try:
+                                import mediapipe as mp
+                                ts_ms = int(time.monotonic_ns() // 1_000_000)
+                                mp_img = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+                                face_res = face_landmarker.detect_for_video(mp_img, ts_ms)
+                                if face_res.face_landmarks and len(face_res.face_landmarks) > 0:
+                                    eye_tracker.update(face_res.face_landmarks[0])
+                                    eye_controller.process_gaze(
+                                        eye_tracker.gaze, eye_tracker.blink)
+                                else:
+                                    eye_tracker.update(None)
+                            except Exception:
+                                pass
 
                 if gesture.gesture != "none":
                     earth.apply_gesture(
@@ -1049,13 +1120,20 @@ def holographic_map(action="open", parameters=None, player=None, **kwargs):
             earth.shutdown()
             if webcam:
                 webcam.shutdown()
+            if face_landmarker:
+                try:
+                    face_landmarker.close()
+                except Exception:
+                    pass
+            if eye_controller:
+                eye_controller.cleanup()
             gesture.landmarker = None
         return {"status": "closed"}
 
-    # ── Fallback: OpenGL globe ───────────────────────────────────────────
+    # ── Fallback: OpenGL globe ───────────────────────────────────────
     print("[NEXUS] Google Earth unavailable — falling back to OpenGL globe")
     if not HAVE_OPENGL_GLOBE:
-        print("[NEXUS] Neither Playwright nor pygame/PyOpenGL available")
+        print("[NEXUS] Neither browser nor pygame/PyOpenGL available")
         return {"status": "error", "msg": "No display backend available"}
 
     app = OpenGLGlobeApp()
