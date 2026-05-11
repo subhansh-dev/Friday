@@ -742,16 +742,18 @@ class GestureController:
         pinch_threshold = 0.07 * (palm_size / 0.15)
         pinch_threshold = max(0.04, min(0.12, pinch_threshold))
 
-        # ── PINCH: check FIRST (Iron Man priority) ─────────────────
-        # Thumb+index tips close together = pinch, regardless of other fingers.
-        # This prevents the common misclassification where a pinch looks like
-        # a partially-closed hand (fist) because the other fingers are curled.
-        if pinch_dist < pinch_threshold:
-            return "pinch", pinch_dist
-
         # ── FIST: all fingers curled ────────────────────────────────
+        # Check FIRST: when all fingers are curled, thumb+index tips are
+        # naturally close (both folded into palm). This must take priority
+        # over pinch detection, otherwise a fist misclassifies as pinch.
         if ext == 0:
             return "fist", pinch_dist
+
+        # ── PINCH: thumb+index close, at least one other finger up ─
+        # A real pinch has the hand partially open — middle/ring/pinky
+        # are at least somewhat extended. If everything is down, it's a fist.
+        if pinch_dist < pinch_threshold:
+            return "pinch", pinch_dist
 
         # ── PEACE: index + middle extended, others down ─────────────
         if index_up and middle_up and not ring_up and not pinky_up:

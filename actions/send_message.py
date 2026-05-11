@@ -329,7 +329,7 @@ def _load_telegram_config():
     allowed_user = os.environ.get("FRIDAY_TELEGRAM_ALLOWED_USER", "0")
     if not bot_token:
         try:
-            base = Path(__file__).resolve().parent
+            base = Path(__file__).resolve().parent.parent
             cfg_path = base / "config" / "api_keys.json"
             if cfg_path.exists():
                 import json as _json

@@ -961,9 +961,9 @@ def holographic_map(action="open", parameters=None, player=None, **kwargs):
     if earth.launch():
         gesture.init()
 
-        # Start webcam
+        # Start webcam (needs cv2 only — independent of OpenGL globe)
         webcam = None
-        if HAVE_OPENGL_GLOBE:
+        if HAS_CV2:
             webcam = WebcamHandler()
             webcam.init()
 
