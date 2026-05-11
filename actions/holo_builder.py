@@ -1,16 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-holo_builder.py — Iron Man Holographic AR Builder (v4.0)
+holo_builder.py — Iron Man Holographic AR Builder (v4.1)
 [Q] cycles draw planes (XY/XZ/YZ)
 [Tab] toggles AR mode (webcam background)
 [Click] select object | [G+drag] move | [S+drag] scale | [Del] delete
-AR Gestures: pinch=draw | fist=grab+move | peace=scale | open=release
+AR Gestures (Iron Man style):
+  pinch (thumb+index)  = Draw / create structures
+  fist  (all closed)   = Grab & move selected
+  point (index only)   = Precision select / aim
+  peace (index+middle) = Scale selected
+  open  (hand open)    = Release / navigate
 [FIX] Camera upside-down (texture V coords flipped)
 [FIX] Gesture hand dropout tolerance (10-frame grace)
 [FIX] OpenCV CAP_DSHOW + warmup + error recovery
 [FIX] Gesture confidence lowered to 0.6
 [FIX] Alt+drag = move without key (Alt+drag also enables drawing over objects)
 [v4.0] Iron Man UI overhaul: radar grid, sci-fi HUD, glow effects, holographic AR
+[v4.1] Iron Man gesture overhaul: pinch-first detection, arc reactor cursor,
+       repulsor sound effects, mechanical grip visuals, energy field FX
 """
 import math
 import random
@@ -89,21 +96,106 @@ class SoundFX:
         except Exception:
             pass  # silently swallowed
 
+    def _play_sweep(self, freq_start, freq_end, duration, volume=0.3):
+        """Frequency sweep — rising or falling tone for sci-fi feel."""
+        if not self.mixer_initialized:
+            return
+        try:
+            import array, math
+            sample_rate = 22050
+            n_samples = int(sample_rate * duration)
+            buf = array.array('h')
+            for i in range(n_samples):
+                t = i / sample_rate
+                progress = i / n_samples
+                freq = freq_start + (freq_end - freq_start) * progress
+                # Slight amplitude envelope (fade in/out)
+                env = math.sin(math.pi * progress) if 0.05 < progress < 0.95 else 0.5
+                val = int(volume * 32767 * env * math.sin(2 * math.pi * freq * t))
+                buf.append(max(-32767, min(32767, val)))
+            sound = pygame.mixer.Sound(buffer=buf)
+            sound.set_volume(volume)
+            sound.play()
+        except Exception:
+            pass
+
+    def _play_multi_tone(self, freqs, duration, volume=0.3):
+        """Multiple harmonics layered — richer, more complex sound."""
+        if not self.mixer_initialized:
+            return
+        try:
+            import array, math
+            sample_rate = 22050
+            n_samples = int(sample_rate * duration)
+            buf = array.array('h')
+            for i in range(n_samples):
+                t = i / sample_rate
+                progress = i / n_samples
+                env = math.sin(math.pi * progress)
+                val = 0
+                for freq, amp in freqs:
+                    val += amp * math.sin(2 * math.pi * freq * t)
+                val = int(volume * 32767 * env * val / len(freqs))
+                buf.append(max(-32767, min(32767, val)))
+            sound = pygame.mixer.Sound(buffer=buf)
+            sound.set_volume(volume)
+            sound.play()
+        except Exception:
+            pass
+
     def play_power_up(self):
-        self._play_tone(440, 0.5, 0.3)
-        time.sleep(0.3)
-        self._play_tone(880, 0.2, 0.3)
+        """Arc reactor boot — rising sweep with harmonic overtones."""
+        self._play_sweep(80, 600, 0.6, 0.25)
+        time.sleep(0.15)
+        self._play_multi_tone([(440, 1.0), (880, 0.5), (1320, 0.3)], 0.4, 0.2)
 
     def play_shutdown(self):
-        self._play_tone(880, 0.15, 0.3)
-        time.sleep(0.15)
-        self._play_tone(440, 0.15, 0.3)
+        """Power-down — falling sweep."""
+        self._play_sweep(600, 80, 0.5, 0.2)
 
     def play_gesture(self):
-        self._play_tone(1200, 0.1, 0.2)
+        """Subtle blip on gesture detection."""
+        self._play_tone(1200, 0.08, 0.15)
 
     def play_ready(self):
-        self._play_tone(660, 0.2, 0.3)
+        """System ready chime."""
+        self._play_multi_tone([(660, 1.0), (990, 0.6), (1320, 0.3)], 0.3, 0.2)
+
+    # ── Iron Man Gesture Sounds ──────────────────────────────────────
+
+    def play_pinch_draw(self):
+        """Repulsor hum when pinch-drawing — low energy charge."""
+        self._play_sweep(200, 350, 0.15, 0.12)
+
+    def play_spawn_object(self):
+        """Object materialisation — rising chime with harmonic sparkle."""
+        self._play_sweep(300, 900, 0.25, 0.2)
+        time.sleep(0.05)
+        self._play_multi_tone([(600, 1.0), (900, 0.7), (1200, 0.4), (1800, 0.2)], 0.35, 0.18)
+
+    def play_grab(self):
+        """Fist grab — mechanical clamp sound."""
+        self._play_multi_tone([(150, 1.0), (200, 0.8), (300, 0.4)], 0.12, 0.2)
+
+    def play_release(self):
+        """Open hand release — soft energy dissipate."""
+        self._play_sweep(500, 200, 0.2, 0.12)
+
+    def play_scale_start(self):
+        """Peace sign scale — tuning fork resonance."""
+        self._play_multi_tone([(440, 1.0), (554, 0.8), (659, 0.6)], 0.2, 0.15)
+
+    def play_select(self):
+        """Object selection — UI confirmation blip."""
+        self._play_sweep(800, 1200, 0.1, 0.15)
+
+    def play_delete(self):
+        """Object deletion — dissolve sound."""
+        self._play_sweep(400, 100, 0.2, 0.18)
+
+    def play_rotate(self):
+        """Dual-hand rotate — servo whir."""
+        self._play_sweep(250, 400, 0.15, 0.1)
 
 
 class ARVisualFX:
@@ -612,6 +704,8 @@ class GestureController:
         """Classify a single hand's gesture from landmarks.
 
         Uses angle-based finger detection — works with tilted/rotated hands.
+        Pinch detection prioritised: thumb+index proximity is checked FIRST
+        so that a pinch (Iron Man draw gesture) is never misclassified as fist.
         """
         # Finger angles: 0 = extended, ~pi = curled
         # Landmark indices: tip=8, PIP=6, MCP=5 for index finger
@@ -629,27 +723,41 @@ class GestureController:
         pinky_up = pinky_angle < _EXT
         ext = sum([index_up, middle_up, ring_up, pinky_up])
 
-        # Thumb: use distance from tip to index MCP (more robust than angle)
+        # Thumb tip to index tip distance — core pinch metric
         pinch_dist = math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y,
                                 lm[4].z - lm[8].z)
 
-        # Adaptive pinch threshold
+        # Adaptive pinch threshold based on palm size
         pinch_threshold = 0.07 * (palm_size / 0.15)
         pinch_threshold = max(0.04, min(0.12, pinch_threshold))
 
+        # ── PINCH: check FIRST (Iron Man priority) ─────────────────
+        # Thumb+index tips close together = pinch, regardless of other fingers.
+        # This prevents the common misclassification where a pinch looks like
+        # a partially-closed hand (fist) because the other fingers are curled.
+        if pinch_dist < pinch_threshold:
+            return "pinch", pinch_dist
+
+        # ── FIST: all fingers curled ────────────────────────────────
         if ext == 0:
             return "fist", pinch_dist
-        elif pinch_dist < pinch_threshold and ext >= 1:
-            return "pinch", pinch_dist
-        elif index_up and middle_up and not ring_up and not pinky_up:
+
+        # ── PEACE: index + middle extended, others down ─────────────
+        if index_up and middle_up and not ring_up and not pinky_up:
             return "peace", pinch_dist
-        elif index_up and not middle_up and not ring_up and not pinky_up:
+
+        # ── POINT: only index extended ──────────────────────────────
+        if index_up and not middle_up and not ring_up and not pinky_up:
             return "point", pinch_dist
-        elif ext == 2:
-            # Any other 2-finger combo (not peace) — treat as point-ish select
+
+        # ── Other 2-finger combos → treat as point-ish select ──────
+        if ext == 2:
             return "point", pinch_dist
-        elif ext >= 3:
+
+        # ── OPEN: 3+ fingers extended ───────────────────────────────
+        if ext >= 3:
             return "open", pinch_dist
+
         return "open", pinch_dist
 
     def _smooth_position(self, idx, raw_x, raw_y):
@@ -2657,11 +2765,12 @@ class InputHandler:
     STATE_MOVE = "move"
     STATE_SCALE = "scale"
 
-    def __init__(self, renderer, ar_overlay, gesture_ctrl, dual_hand_mgr=None):
+    def __init__(self, renderer, ar_overlay, gesture_ctrl, dual_hand_mgr=None, builder=None):
         self.renderer = renderer
         self.ar = ar_overlay
         self.gesture_ctrl = gesture_ctrl
         self.dual_hand = dual_hand_mgr
+        self._builder = builder  # back-reference for sound effects
         self.state = self.STATE_IDLE
 
         self.draw_depth = 0.0
@@ -2936,6 +3045,13 @@ class InputHandler:
 
         Iron Man feel: gestures are immediate, no first-frame kill.
         Gesture changes seamlessly transition between states.
+
+        Gesture mapping (Iron Man style):
+          PINCH  (thumb+index touch)  → Draw / create structures
+          FIST   (all fingers closed) → Grab & move selected object
+          POINT  (index extended)     → Precision select / aim
+          PEACE  (index+middle)       → Scale selected object
+          OPEN   (all fingers open)   → Release / navigate / deselect
         """
         g = self.gesture_ctrl
         dh = self.dual_hand
@@ -2974,18 +3090,37 @@ class InputHandler:
         if g.just_changed:
             if self.state == self.STATE_DRAWING and gesture != GestureController.PINCH:
                 self._finish_drawing()
+                if hasattr(self, '_builder') and hasattr(self._builder, 'sound_fx'):
+                    self._builder.sound_fx.play_spawn_object()
             elif self.state in (self.STATE_MOVE, self.STATE_SCALE):
                 self.state = self.STATE_IDLE
             self._gesture_prev_pos = None
             self._dual_obj_snapshot = None
 
+            # Play transition sound for the new gesture
+            if hasattr(self, '_builder') and hasattr(self._builder, 'sound_fx'):
+                if gesture == GestureController.PINCH:
+                    self._builder.sound_fx.play_pinch_draw()
+                elif gesture == GestureController.FIST:
+                    self._builder.sound_fx.play_grab()
+                elif gesture == GestureController.PEACE:
+                    self._builder.sound_fx.play_scale_start()
+                elif gesture == GestureController.OPEN:
+                    self._builder.sound_fx.play_release()
+                elif gesture == GestureController.POINT:
+                    self._builder.sound_fx.play_select()
+
         if gesture == GestureController.PINCH:
+            # ── Pinch: draw / create structures ──────────────────────
+            # Like Tony drawing holograms with thumb+index
             if self.state != self.STATE_DRAWING:
                 self._start_drawing()
             else:
                 self._add_draw_point()
 
         elif gesture == GestureController.FIST:
+            # ── Fist: grab & move ────────────────────────────────────
+            # Like Tony grabbing and repositioning holograms
             prev = self._gesture_prev_pos
             self._gesture_prev_pos = (mx, my)
 
@@ -3009,12 +3144,15 @@ class InputHandler:
                     self._do_move(dx, dy, speed=0.006)
 
         elif gesture == GestureController.POINT:
-            # Precision select — like Tony pointing at UI elements
+            # ── Point: precision select ──────────────────────────────
+            # Like Tony pointing at UI elements to select them
             obj = self._pick_object(mx, my)
-            if obj is not None:
+            if obj is not None and obj is not self.renderer.selected:
                 self.renderer.selected = obj
 
         elif gesture == GestureController.PEACE:
+            # ── Peace: scale ─────────────────────────────────────────
+            # Like Tony stretching/compressing holograms with two fingers
             if self.state != self.STATE_SCALE:
                 if self.renderer.selected:
                     self.state = self.STATE_SCALE
@@ -3032,6 +3170,15 @@ class InputHandler:
                 self._gesture_prev_pos = (mx, my)
 
         elif gesture == GestureController.OPEN:
+            # ── Open: release / navigate ─────────────────────────────
+            # Like Tony releasing a hologram — hand open, relaxed
+            if self.state in (self.STATE_DRAWING,):
+                self._finish_drawing()
+                if hasattr(self, '_builder') and hasattr(self._builder, 'sound_fx'):
+                    self._builder.sound_fx.play_spawn_object()
+            elif self.state in (self.STATE_MOVE, self.STATE_SCALE):
+                self.state = self.STATE_IDLE
+
             obj = self._pick_object(mx, my)
             if obj is not None and obj is not self.renderer.selected:
                 self.renderer.selected = obj
@@ -3437,7 +3584,7 @@ class HoloBuilder:
         self.ar = AROverlay()
         self.gesture_ctrl = GestureController(num_hands=2)
         self.dual_hand = DualHandGestureManager()
-        self.input = InputHandler(self.renderer, self.ar, self.gesture_ctrl, self.dual_hand)
+        self.input = InputHandler(self.renderer, self.ar, self.gesture_ctrl, self.dual_hand, builder=self)
         self.renderer.input = self.input
         self.ar_mode = False
         self.power_up_active = False
@@ -3486,11 +3633,15 @@ class HoloBuilder:
             print("  Ctrl+Z           - UNDO")
             print("  Esc              - QUIT")
             if self.gesture_ctrl.enabled:
-                print("[HOLO] === GESTURE CONTROLS (AR mode) ===")
-                print("  Pinch (thumb+index) - Draw")
-                print("  Fist (all closed)   - Grab & move selected")
-                print("  Peace (2 fingers)   - Scale selected")
-                print("  Open hand           - Release / navigate")
+                print("[HOLO] === IRON MAN GESTURE CONTROLS (AR mode) ===")
+                print("  Pinch (thumb+index)  → Draw / create structures")
+                print("  Fist (all closed)    → Grab & move selected")
+                print("  Point (index only)   → Precision select / aim")
+                print("  Peace (index+middle) → Scale selected")
+                print("  Open hand            → Release / navigate")
+                print("  Both fists           → Reposition scene")
+                print("  Both open/pinch      → Zoom scale")
+                print("  Both point           → Rotate model")
             while self.running:
                 self._handle_events()
                 if not self.running:
@@ -3565,17 +3716,27 @@ class HoloBuilder:
             obj = self.renderer.objects[-1] if self.renderer.objects else None
             if obj and hasattr(self, 'interaction_fx'):
                 self.interaction_fx.trigger_spawn(obj.get_center(), obj.color[:3])
+            if hasattr(self, 'sound_fx'):
+                self.sound_fx.play_spawn_object()
             print(f"[HOLO] Object created ({len(self.renderer.objects)} total)")
         elif action == "plane_changed":
             print(f"[HOLO] Draw plane: {self.renderer.projector.draw_plane}")
         elif action == "object_selected":
             n = self.renderer.selected.name if self.renderer.selected else "?"
+            if hasattr(self, 'sound_fx'):
+                self.sound_fx.play_select()
             print(f"[HOLO] Selected: {n}")
         elif action == "object_deleted":
+            if hasattr(self, 'sound_fx'):
+                self.sound_fx.play_delete()
             print(f"[HOLO] Deleted ({len(self.renderer.objects)} remaining)")
         elif action == "move_started":
+            if hasattr(self, 'sound_fx'):
+                self.sound_fx.play_grab()
             print("[HOLO] Move mode — drag to move")
         elif action == "scale_started":
+            if hasattr(self, 'sound_fx'):
+                self.sound_fx.play_scale_start()
             print("[HOLO] Scale mode — drag up/down")
 
     def _toggle_ar(self):
@@ -3589,7 +3750,7 @@ class HoloBuilder:
                 self.power_up_start = time.time()
                 self._gesture_warned = False  # reset so warning can fire again
                 if hasattr(self, 'sound_fx'):
-                    pass # self.sound_fx.play_power_up()  # disabled per user request
+                    self.sound_fx.play_power_up()
                 self.renderer.bg_color = (0.0, 0.0, 0.0)
                 glClearColor(0, 0, 0, 0)
                 print("[HOLO] AR mode ON — gestures active")
@@ -3733,83 +3894,130 @@ class HoloBuilder:
         g_elapsed = t - gs['gesture_start']
 
         if gesture == GestureController.PINCH:
-            # ── Pinch: drawing mode — ink ripple + energy particles ───
+            # ── Pinch: Arc Reactor drawing cursor ─────────────────────
+            # Like Tony's repulsor — glowing core with concentric energy rings
+
             # Spawn periodic ripples while drawing
-            if not gs['ripples'] or t - gs['ripples'][-1]['t0'] > 0.15:
+            if not gs['ripples'] or t - gs['ripples'][-1]['t0'] > 0.12:
                 gs['ripples'].append({'t0': t, 'x': hx, 'y': hy})
             gs['ripples'] = [r for r in gs['ripples'] if t - r['t0'] < 0.8]
 
-            # Expanding ripple rings
+            # Expanding energy ripple rings (3 concentric)
             for r in gs['ripples']:
                 age = t - r['t0']
                 prog = age / 0.8
-                radius = prog * 35
-                alpha = (1 - prog) * 0.6
-                glColor4f(1.0, 0.2, 0.4, alpha)
-                glLineWidth(2.0 * (1 - prog))
-                glBegin(GL_LINE_LOOP)
-                for i in range(24):
-                    a = 2 * math.pi * i / 24
-                    glVertex2f(r['x'] + radius * math.cos(a),
-                               r['y'] + radius * math.sin(a))
-                glEnd()
+                for ring_i in range(3):
+                    ring_prog = max(0, prog - ring_i * 0.08)
+                    if ring_prog > 1:
+                        continue
+                    radius = ring_prog * (30 + ring_i * 12)
+                    alpha = (1 - ring_prog) * (0.6 - ring_i * 0.15)
+                    # Color shifts from red to cyan as ring expands
+                    cr = 1.0 - ring_prog * 0.5
+                    cg = 0.2 + ring_prog * 0.63
+                    cb = 0.4 + ring_prog * 0.55
+                    glColor4f(cr, cg, cb, alpha)
+                    glLineWidth(max(0.5, 2.5 * (1 - ring_prog)))
+                    glBegin(GL_LINE_LOOP)
+                    for i in range(32):
+                        a = 2 * math.pi * i / 32
+                        glVertex2f(r['x'] + radius * math.cos(a),
+                                   r['y'] + radius * math.sin(a))
+                    glEnd()
 
-            # Central bright core with glow layers
-            glColor4f(1.0, 0.0, 0.4, 0.15 * pulse)
-            glPointSize(28.0)
-            glBegin(GL_POINTS)
-            glVertex2f(hx, hy)
-            glEnd()
-            glColor4f(1.0, 0.1, 0.5, 0.4 * pulse)
-            glPointSize(14.0)
-            glBegin(GL_POINTS)
-            glVertex2f(hx, hy)
-            glEnd()
-            glColor4f(1.0, 0.4, 0.6, 0.9)
-            glPointSize(7.0)
+            # Outer energy halo (pulsing)
+            halo_r = 28 + 6 * math.sin(t * 5)
+            glColor4f(1.0, 0.15, 0.35, 0.06 * pulse)
+            glPointSize(36.0)
             glBegin(GL_POINTS)
             glVertex2f(hx, hy)
             glEnd()
 
-            # Hexagonal scanner ring rotating
-            rot = t * 4
-            s = 14 + 3 * math.sin(t * 6)
-            glColor4f(1.0, 0.2, 0.4, pulse * 0.7)
-            glLineWidth(1.5)
+            # Mid glow (arc reactor style)
+            glColor4f(1.0, 0.2, 0.45, 0.2 * pulse)
+            glPointSize(22.0)
+            glBegin(GL_POINTS)
+            glVertex2f(hx, hy)
+            glEnd()
+
+            # Inner core — bright white-hot center
+            glColor4f(1.0, 0.6, 0.75, 0.95)
+            glPointSize(8.0)
+            glBegin(GL_POINTS)
+            glVertex2f(hx, hy)
+            glEnd()
+            # Tiny white-hot core
+            glColor4f(1.0, 1.0, 1.0, 0.9)
+            glPointSize(3.0)
+            glBegin(GL_POINTS)
+            glVertex2f(hx, hy)
+            glEnd()
+
+            # Hexagonal arc reactor ring (rotating)
+            rot = t * 3.5
+            s = 16 + 3 * math.sin(t * 6)
+            glColor4f(1.0, 0.2, 0.4, pulse * 0.8)
+            glLineWidth(2.0)
             glBegin(GL_LINE_LOOP)
             for i in range(6):
                 a = rot + 2 * math.pi * i / 6
                 glVertex2f(hx + s * math.cos(a), hy + s * math.sin(a))
             glEnd()
 
-            # Outer energy ring
-            glColor4f(1.0, 0.0, 0.4, pulse * 0.25)
-            glLineWidth(1.0)
+            # Inner rotating triangle (opposite direction)
+            glColor4f(1.0, 0.4, 0.6, pulse * 0.5)
+            glLineWidth(1.5)
             glBegin(GL_LINE_LOOP)
-            for i in range(36):
-                a = 2 * math.pi * i / 36
-                glVertex2f(hx + (s + 8) * math.cos(a), hy + (s + 8) * math.sin(a))
+            for i in range(3):
+                a = -rot * 0.8 + 2 * math.pi * i / 3
+                glVertex2f(hx + s * 0.55 * math.cos(a),
+                           hy + s * 0.55 * math.sin(a))
+            glEnd()
+
+            # Outer energy ring with gap segments
+            outer_r = s + 10
+            glColor4f(1.0, 0.0, 0.4, pulse * 0.3)
+            glLineWidth(1.5)
+            glBegin(GL_LINES)
+            for i in range(6):
+                a = rot * 0.5 + math.pi / 3 * i
+                a2 = a + 0.35
+                glVertex2f(hx + outer_r * math.cos(a), hy + outer_r * math.sin(a))
+                glVertex2f(hx + outer_r * math.cos(a2), hy + outer_r * math.sin(a2))
+            glEnd()
+
+            # Tick marks at cardinal points
+            glColor4f(1.0, 0.3, 0.5, pulse * 0.4)
+            glLineWidth(1.0)
+            glBegin(GL_LINES)
+            for i in range(4):
+                a = rot * 0.3 + math.pi / 2 * i
+                glVertex2f(hx + (outer_r - 3) * math.cos(a), hy + (outer_r - 3) * math.sin(a))
+                glVertex2f(hx + (outer_r + 3) * math.cos(a), hy + (outer_r + 3) * math.sin(a))
             glEnd()
 
         elif gesture == GestureController.FIST:
-            # ── Fist: grab mode — shockwave corners + grip field ──────
-            # Shockwave on initial grab
-            if g_elapsed < 0.5:
-                sw_prog = g_elapsed / 0.5
-                sw_r = sw_prog * 60
-                sw_alpha = (1 - sw_prog) * 0.7
-                glColor4f(1.0, 0.7, 0.0, sw_alpha)
-                glLineWidth(2.5 * (1 - sw_prog))
-                glBegin(GL_LINE_LOOP)
-                for i in range(32):
-                    a = 2 * math.pi * i / 32
-                    glVertex2f(hx + sw_r * math.cos(a), hy + sw_r * math.sin(a))
-                glEnd()
+            # ── Fist: Mechanical Repulsor Grip ────────────────────────
+            # Like Tony's gauntlet clamping down — energy field + grip brackets
 
-            # Corner brackets with animated pulse
-            arm = 20 + 4 * math.sin(t * 5)
-            gap = 8
-            glColor4f(1.0, 0.7, 0.0, pulse)
+            # Shockwave on initial grab (expanding energy burst)
+            if g_elapsed < 0.4:
+                sw_prog = g_elapsed / 0.4
+                for sw_i in range(2):
+                    sw_r = sw_prog * (50 + sw_i * 20)
+                    sw_alpha = (1 - sw_prog) * (0.6 - sw_i * 0.2)
+                    glColor4f(1.0, 0.65, 0.0, sw_alpha)
+                    glLineWidth(max(0.5, 2.5 * (1 - sw_prog)))
+                    glBegin(GL_LINE_LOOP)
+                    for i in range(32):
+                        a = 2 * math.pi * i / 32
+                        glVertex2f(hx + sw_r * math.cos(a), hy + sw_r * math.sin(a))
+                    glEnd()
+
+            # Corner grip brackets (animated pulse — mechanical feel)
+            arm = 22 + 4 * math.sin(t * 5)
+            gap = 10
+            glColor4f(1.0, 0.65, 0.0, pulse * 0.9)
             glLineWidth(2.5)
             glBegin(GL_LINES)
             # Top-left
@@ -3826,32 +4034,51 @@ class HoloBuilder:
             glVertex2f(hx + arm, hy + arm); glVertex2f(hx + arm, hy + gap)
             glEnd()
 
-            # Rotating inner square (energy field)
-            rot = t * 2.5
-            inner = 10 + 3 * math.sin(t * 3)
-            glColor4f(1.0, 0.7, 0.0, pulse * 0.5)
-            glLineWidth(1.5)
+            # Rotating inner hexagon (energy containment field)
+            rot = t * 2.0
+            inner = 12 + 3 * math.sin(t * 3)
+            glColor4f(1.0, 0.6, 0.0, pulse * 0.6)
+            glLineWidth(1.8)
             glBegin(GL_LINE_LOOP)
-            for i in range(4):
-                a = rot + math.pi / 2 * i + math.pi / 4
+            for i in range(6):
+                a = rot + math.pi / 3 * i
                 glVertex2f(hx + inner * math.cos(a), hy + inner * math.sin(a))
             glEnd()
 
-            # Central grip point
-            glColor4f(1.0, 0.8, 0.2, 0.8)
+            # Counter-rotating triangle
+            glColor4f(1.0, 0.8, 0.2, pulse * 0.35)
+            glLineWidth(1.2)
+            glBegin(GL_LINE_LOOP)
+            for i in range(3):
+                a = -rot * 0.7 + 2 * math.pi * i / 3
+                glVertex2f(hx + inner * 0.6 * math.cos(a),
+                           hy + inner * 0.6 * math.sin(a))
+            glEnd()
+
+            # Central grip point (bright)
+            glColor4f(1.0, 0.85, 0.3, 0.9)
             glPointSize(5.0)
             glBegin(GL_POINTS)
             glVertex2f(hx, hy)
             glEnd()
 
-            # Pulsing outer ring
-            outer_r = arm + 8 + 4 * math.sin(t * 4)
-            glColor4f(1.0, 0.7, 0.0, pulse * 0.2)
-            glLineWidth(1.0)
-            glBegin(GL_LINE_LOOP)
-            for i in range(36):
-                a = 2 * math.pi * i / 36
+            # Energy field glow (soft halo)
+            glColor4f(1.0, 0.5, 0.0, 0.06 * pulse)
+            glPointSize(30.0)
+            glBegin(GL_POINTS)
+            glVertex2f(hx, hy)
+            glEnd()
+
+            # Pulsing outer ring with segmented arcs
+            outer_r = arm + 10 + 4 * math.sin(t * 4)
+            glColor4f(1.0, 0.6, 0.0, pulse * 0.25)
+            glLineWidth(1.5)
+            glBegin(GL_LINES)
+            for i in range(8):
+                a = rot * 0.5 + math.pi / 4 * i
+                a2 = a + 0.25
                 glVertex2f(hx + outer_r * math.cos(a), hy + outer_r * math.sin(a))
+                glVertex2f(hx + outer_r * math.cos(a2), hy + outer_r * math.sin(a2))
             glEnd()
 
         elif gesture == GestureController.PEACE:
@@ -4230,7 +4457,12 @@ def holo_builder(parameters=None, player=None, **kwargs):
             "FRIDAY Holo Builder v4.0 — Iron Man Edition online.\n"
             "L-Click=draw | R-Click=orbit | M-Click=pan | Scroll=zoom\n"
             "Q=plane | Tab=AR mode | Alt+drag=move | G/S=move/scale\n"
-            "AR Gestures: pinch=draw | fist=move | peace=scale | open=navigate"
+            "Iron Man Gestures:\n"
+            "  Pinch (thumb+index) = Draw / create structures\n"
+            "  Fist (all closed)   = Grab & move\n"
+            "  Point (index only)  = Precision select\n"
+            "  Peace (2 fingers)   = Scale\n"
+            "  Open hand           = Release / navigate"
         )
 
     elif action == "stop":
