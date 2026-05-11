@@ -202,6 +202,9 @@ class AGIOrchestrator:
             "proactive_engine": ("brain.proactive_engine", "get_proactive_engine"),
             "proactive_checkin": ("brain.proactive_checkin", "get_proactive_checkin"),
             "voice_modulator": ("brain.voice_modulator", "get_voice_modulator"),
+            # Code reflection & cyber reasoning
+            "code_reflector": ("brain.code_reflector", "get_code_reflector"),
+            "cyber_reasoning": ("brain.cyber_reasoning", "get_cyber_engine"),
         }
 
         for name, (module_path, func_name) in module_loaders.items():
@@ -246,6 +249,8 @@ class AGIOrchestrator:
                        "memory_coordinator", "procedural_memory"],
             "metacognition": ["metacognitive_monitor", "cognitive_load"],
             "exploration": ["curiosity", "proactive_engine"],
+            "code_reflection": ["code_reflector"],
+            "security": ["cyber_reasoning"],
         }
         for stage, module_names in wiring.items():
             available = [n for n in module_names if self._modules.get(n) is not None]
@@ -587,6 +592,20 @@ class AGIOrchestrator:
                 return mod.get_stats()
 
         elif name == "voice_modulator":
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "code_reflector":
+            if hasattr(mod, "analyze_failure"):
+                analysis = mod.analyze_failure(request[:300])
+                return {"failure_analysis": str(analysis)[:300]}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "cyber_reasoning":
+            if hasattr(mod, "get_session_state"):
+                state = mod.get_session_state()
+                return {"session_state": {k: str(v)[:60] for k, v in list(state.items())[:5]}}
             if hasattr(mod, "get_stats"):
                 return mod.get_stats()
 

@@ -42,6 +42,31 @@ WSL_DISTRO = os.environ.get("FRIDAY_WSL_DISTRO", "kali-linux")
 WSL_EXE = r"C:\Windows\System32\wsl.exe"
 POWERSHELL_EXE = r"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
 
+# ── Platform detection ──────────────────────────────────────────────
+IS_LINUX = sys.platform.startswith("linux")
+IS_WINDOWS = sys.platform == "win32"
+
+# Native wordlist paths (Linux/Kali)
+_NATIVE_WORDLISTS = [
+    "/usr/share/wordlists/dirb/common.txt",
+    "/usr/share/dirb/wordlists/common.txt",
+    "/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt",
+    "/usr/share/seclists/Discovery/Web-Content/common.txt",
+]
+
+def _find_wordlist(name: str = None) -> str:
+    """Find a wordlist on the system."""
+    if name and Path(name).exists():
+        return name
+    for wl in _NATIVE_WORDLISTS:
+        if Path(wl).exists():
+            return wl
+    return "/usr/share/wordlists/dirb/common.txt"  # default fallback
+
+def _tool_available(tool_name: str) -> bool:
+    """Check if a tool is available on PATH."""
+    return shutil.which(tool_name) is not None
+
 # ── Streaming state ────────────────────────────────────────────────
 _active_player = None  # Set by security_tools() entry point
 
@@ -488,8 +513,119 @@ def _run_ps_streaming(cmd: str, params_json: str = "{}") -> str:
 
 # ── Non-streaming fallback (for MCP server or no player) ───────────
 
+def _run_native_streaming(cmd: str, timeout: int = 120) -> str:
+    """Run command natively on Linux with real-time output streaming to UI."""
+    player = _active_player
+
+    try:
+        proc = subprocess.Popen(
+            ["bash", "-c", cmd],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+            encoding='utf-8',
+            errors='replace',
+        )
+
+        output_lines = []
+        start_time = time.time()
+        done_event = threading.Event()
+
+        _safe_log(player, f"[Cyber] ▶ {cmd[:100]}...")
+
+        def _reader():
+            try:
+                for line in proc.stdout:
+                    line = line.rstrip('\n\r')
+                    if not line:
+                        continue
+                    output_lines.append(line)
+                    count = len(output_lines)
+                    if count <= 30 or count % 5 == 0:
+                        _safe_log(player, f"[Cyber] │ {line[:150]}")
+            except Exception:
+                pass
+            finally:
+                done_event.set()
+
+        def _progress():
+            i = 0
+            while not done_event.wait(5):
+                elapsed = time.time() - start_time
+                lines = len(output_lines)
+                _safe_log(
+                    player,
+                    f"[Cyber] {_SPINNER[i % len(_SPINNER)]} "
+                    f"Running... ({elapsed:.0f}s, {lines} lines)")
+                i += 1
+                if elapsed > timeout:
+                    _safe_log(player, f"[Cyber] ✗ Timeout — force killing")
+                    try:
+                        proc.kill()
+                    except Exception:
+                        pass
+                    done_event.set()
+                    break
+
+        reader = threading.Thread(target=_reader, daemon=True)
+        progress = threading.Thread(target=_progress, daemon=True)
+        reader.start()
+        progress.start()
+
+        reader.join(timeout=timeout + 5)
+
+        if reader.is_alive():
+            try:
+                proc.kill()
+            except Exception:
+                pass
+            done_event.set()
+            _safe_log(player, "[Cyber] ✗ Timed out")
+
+        proc.wait(timeout=5)
+        output = "\n".join(output_lines)
+
+        if proc.returncode != 0 and not output:
+            return json.dumps({"error": f"Exit code {proc.returncode}"})
+        return output.strip() if output.strip() else json.dumps({"result": "Done."})
+
+    except Exception as e:
+        return json.dumps({"error": str(e)})
+
+
+def _run_native(cmd: str, timeout: int = 120) -> str:
+    """Run command natively on Linux. Uses streaming if _active_player is set."""
+    if _active_player:
+        return _run_native_streaming(cmd, timeout)
+
+    try:
+        r = subprocess.run(
+            ["bash", "-c", cmd],
+            capture_output=True, text=True, timeout=timeout,
+            encoding='utf-8', errors='replace',
+        )
+        out = (r.stdout or "").strip()
+        err = (r.stderr or "").strip()
+        if r.returncode != 0:
+            return json.dumps({
+                "error": err or f"Exit code {r.returncode}",
+                "output": out[:500],
+            })
+        return out if out else json.dumps({"result": "Done."})
+    except subprocess.TimeoutExpired:
+        return json.dumps({"error": f"Timed out after {timeout}s"})
+    except Exception as e:
+        return json.dumps({"error": str(e)})
+
+
 def _run_wsl(cmd: str, timeout: int = 120) -> str:
-    """Run WSL command. Uses streaming if _active_player is set."""
+    """Run WSL command (Windows) or native command (Linux)."""
+    # On Linux, run natively
+    if IS_LINUX:
+        return _run_native(cmd, timeout)
+
+    # On Windows, use WSL
     if _active_player:
         return _run_wsl_streaming(cmd, timeout)
 
@@ -564,13 +700,17 @@ def _run_powershell(cmd: str, params: dict = None) -> str:
 
 
 def _via_mcp_or_wsl(mcp_method: str, params: dict, wsl_cmd: str) -> str:
-    """Try MCP server first, fall back to WSL (streaming if player available)."""
+    """Try MCP server first, fall back to native/WSL execution."""
     if _mcp and _mcp.is_running:
         try:
             result = _mcp.call(mcp_method, params, timeout=120)
             return _format_result(result)
         except Exception as e:
-            _safe_log(_active_player, f"[Cyber] MCP failed, falling back to WSL: {e}")
+            _safe_log(_active_player, f"[Cyber] MCP failed, falling back: {e}")
+    # On Linux, run natively
+    if IS_LINUX:
+        return _format_result(_run_native(wsl_cmd))
+    # On Windows, use WSL
     if _check_wsl():
         return _format_result(_run_wsl(wsl_cmd))
     return (
@@ -651,16 +791,24 @@ def _handle_security_action(parameters: dict) -> str:
 
     # ── Health / Status ──────────────────────────────────────────
     if action == "health":
-        wsl_ok = _check_wsl()
+        wsl_ok = _check_wsl() if IS_WINDOWS else False
+        # Check native tools on Linux
+        native_tools = {}
+        if IS_LINUX:
+            for tool in ["nmap", "nikto", "sqlmap", "nuclei", "ffuf", "gobuster",
+                         "subfinder", "httpx", "dnsx", "whatweb", "wpscan", "naabu",
+                         "katana", "hydra", "john", "whois", "dig", "curl", "openssl"]:
+                native_tools[tool] = _tool_available(tool)
         return json.dumps({
             "status": "ready",
+            "platform": "linux" if IS_LINUX else "windows",
             "wsl_kali": wsl_ok,
+            "native_execution": IS_LINUX,
+            "native_tools": native_tools if IS_LINUX else None,
             "mcp_available": _mcp is not None,
             "mcp_running": _mcp.is_running if _mcp else False,
             "ps_kit": PS_KIT.exists(),
             "wsl_distro": WSL_DISTRO,
-            "wsl_exe_exists": Path(WSL_EXE).exists(),
-            "powershell_exe_exists": Path(POWERSHELL_EXE).exists(),
             "streaming": True,
         }, indent=2)
 
@@ -677,6 +825,38 @@ def _handle_security_action(parameters: dict) -> str:
     if action == "check_tools":
         if _mcp and _mcp.is_running:
             return _format_result(_mcp.call("check_wsl_tools", timeout=30))
+        if IS_LINUX:
+            tools = {
+                "nmap": _tool_available("nmap"),
+                "nikto": _tool_available("nikto"),
+                "sqlmap": _tool_available("sqlmap"),
+                "nuclei": _tool_available("nuclei"),
+                "ffuf": _tool_available("ffuf"),
+                "gobuster": _tool_available("gobuster"),
+                "subfinder": _tool_available("subfinder"),
+                "httpx": _tool_available("httpx"),
+                "dnsx": _tool_available("dnsx"),
+                "whatweb": _tool_available("whatweb"),
+                "wpscan": _tool_available("wpscan"),
+                "naabu": _tool_available("naabu"),
+                "katana": _tool_available("katana"),
+                "hydra": _tool_available("hydra"),
+                "john": _tool_available("john"),
+                "whois": _tool_available("whois"),
+                "dig": _tool_available("dig"),
+                "curl": _tool_available("curl"),
+                "openssl": _tool_available("openssl"),
+            }
+            available = [k for k, v in tools.items() if v]
+            missing = [k for k, v in tools.items() if not v]
+            lines = [
+                f"Platform: Linux (native execution)",
+                f"Available ({len(available)}): {', '.join(available)}",
+            ]
+            if missing:
+                lines.append(f"Missing ({len(missing)}): {', '.join(missing)}")
+                lines.append("Install missing tools with: apt install <tool> or go install/github releases")
+            return "\n".join(lines)
         wsl_ok = _check_wsl()
         if not wsl_ok:
             return (
@@ -719,6 +899,9 @@ def _handle_security_action(parameters: dict) -> str:
         err = _validate_target(target, ("ip", "domain"))
         if err:
             return err
+        if IS_LINUX:
+            p = ports or "21,22,23,25,53,80,110,143,443,445,993,995,1433,1521,2049,2375,3306,3389,5432,5900,6379,8080,8443,9000,27017"
+            return _format_result(_run_native(f"nmap -p {_safe_quote(p)} {_safe_quote(target)} 2>&1"))
         return _format_result(_run_powershell("port_scan", {
             "Hostname": target,
             "Ports": ports or "21,22,23,25,53,80,110,143,443,445,993,995,"
@@ -776,6 +959,18 @@ def _handle_security_action(parameters: dict) -> str:
         err = _validate_target(target, ("domain",))
         if err:
             return err
+        if IS_LINUX:
+            safe_t = _safe_quote(target)
+            cmd = (
+                f"echo '=== A Records ===' && dig +short {safe_t} A 2>&1 && "
+                f"echo '=== AAAA Records ===' && dig +short {safe_t} AAAA 2>&1 && "
+                f"echo '=== MX Records ===' && dig +short {safe_t} MX 2>&1 && "
+                f"echo '=== NS Records ===' && dig +short {safe_t} NS 2>&1 && "
+                f"echo '=== TXT Records ===' && dig +short {safe_t} TXT 2>&1 && "
+                f"echo '=== CNAME ===' && dig +short {safe_t} CNAME 2>&1 && "
+                f"echo '=== SOA ===' && dig +short {safe_t} SOA 2>&1"
+            )
+            return _format_result(_run_native(cmd))
         return _format_result(_run_powershell("dns_info", {"Domain": target}))
 
     if action == "dnsx":
@@ -801,6 +996,15 @@ def _handle_security_action(parameters: dict) -> str:
         if err:
             return err
         hostname = target.replace("https://", "").replace("http://", "").split("/")[0]
+        if IS_LINUX:
+            safe_h = _safe_quote(hostname)
+            cmd = (
+                f"echo | openssl s_client -connect {safe_h}:443 -servername {safe_h} 2>/dev/null | "
+                f"openssl x509 -noout -subject -issuer -dates -serial -fingerprint -ext subjectAltName 2>&1 && "
+                f"echo '=== Protocol ===' && "
+                f"echo | openssl s_client -connect {safe_h}:443 -servername {safe_h} 2>&1 | grep -E 'Protocol|Cipher|Session-ID'"
+            )
+            return _format_result(_run_native(cmd))
         return _format_result(_run_powershell("ssl_info", {"Hostname": hostname}))
 
     # ── Whois ──────────────────────────────────────────────────
@@ -808,6 +1012,8 @@ def _handle_security_action(parameters: dict) -> str:
         err = _validate_target(target, ("domain", "ip"))
         if err:
             return err
+        if IS_LINUX:
+            return _format_result(_run_native(f"whois {_safe_quote(target)} 2>&1"))
         return _format_result(_run_powershell("whois", {"Domain": target}))
 
     # ── Web Fuzzing ────────────────────────────────────────────
@@ -815,6 +1021,16 @@ def _handle_security_action(parameters: dict) -> str:
         err = _validate_target(target, ("url", "domain"))
         if err:
             return err
+        if IS_LINUX:
+            safe_t = _safe_quote(target)
+            wl = _find_wordlist(wordlist)
+            safe_wl = _safe_quote(wl)
+            if _tool_available("ffuf"):
+                return _format_result(_run_native(f"ffuf -u {safe_t}/FUZZ -w {safe_wl} -c -t 50 2>&1"))
+            elif _tool_available("gobuster"):
+                return _format_result(_run_native(f"gobuster dir -u {safe_t} -w {safe_wl} -t 30 2>&1"))
+            else:
+                return json.dumps({"error": "No fuzzing tools available. Install ffuf or gobuster."})
         params = {"BaseUrl": target}
         if wordlist:
             params["Wordlist"] = wordlist
@@ -909,6 +1125,11 @@ def _handle_security_action(parameters: dict) -> str:
         err = _validate_target(target, ("domain",))
         if err:
             return err
+        if IS_LINUX:
+            safe_t = _safe_quote(target)
+            return _format_result(_run_native(
+                f"curl -s 'https://web.archive.org/cdx/search/cdx?url={safe_t}/*&output=text&fl=original,statuscode&limit=50' 2>&1"
+            ))
         return _format_result(_run_powershell("http_archive", {"Domain": target}))
 
     # ── Python-native utilities ─────────────────────────────────

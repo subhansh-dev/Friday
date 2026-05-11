@@ -1,0 +1,50 @@
+[
+  {
+    "character_id": "83b7e9e55152",
+    "name": "Elena Voss",
+    "role": "protagonist",
+    "description": "",
+    "traits": [
+      "flawed",
+      "relatable",
+      "determined"
+    ],
+    "flaws": [
+      "impulsive",
+      "overconfident"
+    ],
+    "motivations": [
+      "gaining power"
+    ],
+    "backstory": "",
+    "arc_start": "Defined by their impulsive nature",
+    "arc_end": "Overcomes impulsive through hardship",
+    "voice_notes": "Speaks with intensity",
+    "relationships": {},
+    "first_created": "2026-05-11T21:27:51.704458"
+  },
+  {
+    "character_id": "7e0468ef29b5",
+    "name": "Director Kane",
+    "role": "antagonist",
+    "description": "",
+    "traits": [
+      "ruthless",
+      "charismatic",
+      "complex"
+    ],
+    "flaws": [
+      "obsessive",
+      "stubborn"
+    ],
+    "motivations": [
+      "proving their worth"
+    ],
+    "backstory": "",
+    "arc_start": "Defined by their obsessive nature",
+    "arc_end": "Overcomes obsessive through hardship",
+    "voice_notes": "Speaks with warmth",
+    "relationships": {},
+    "first_created": "2026-05-11T21:27:51.704680"
+  }
+]

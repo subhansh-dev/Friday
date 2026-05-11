@@ -1,0 +1,68 @@
+[
+  {
+    "style_id": "2796948cd696",
+    "name": "Hemingway",
+    "description": "Short sentences, minimal adjectives, iceberg theory",
+    "sentence_length": "medium",
+    "vocabulary_level": "standard",
+    "imagery_density": 0.5,
+    "dialogue_ratio": 0.3,
+    "techniques": [],
+    "sample_passage": ""
+  },
+  {
+    "style_id": "c7f78113aab7",
+    "name": "Tolkien",
+    "description": "Epic, detailed, archaic vocabulary, songs and poetry",
+    "sentence_length": "medium",
+    "vocabulary_level": "standard",
+    "imagery_density": 0.5,
+    "dialogue_ratio": 0.3,
+    "techniques": [],
+    "sample_passage": ""
+  },
+  {
+    "style_id": "c72c27830662",
+    "name": "Hardboiled Noir",
+    "description": "Cynical first-person, similes, atmosphere over plot",
+    "sentence_length": "medium",
+    "vocabulary_level": "standard",
+    "imagery_density": 0.5,
+    "dialogue_ratio": 0.3,
+    "techniques": [],
+    "sample_passage": ""
+  },
+  {
+    "style_id": "0fac4047d5a8",
+    "name": "Cyberpunk",
+    "description": "Technical jargon, fragmented, neon imagery, street slang",
+    "sentence_length": "medium",
+    "vocabulary_level": "standard",
+    "imagery_density": 0.5,
+    "dialogue_ratio": 0.3,
+    "techniques": [],
+    "sample_passage": ""
+  },
+  {
+    "style_id": "20483cecdd5b",
+    "name": "Literary Fiction",
+    "description": "Dense imagery, introspective, layered prose",
+    "sentence_length": "medium",
+    "vocabulary_level": "standard",
+    "imagery_density": 0.5,
+    "dialogue_ratio": 0.3,
+    "techniques": [],
+    "sample_passage": ""
+  },
+  {
+    "style_id": "3e3910621ec5",
+    "name": "Minimalist",
+    "description": "Sparse, precise, every word earns its place",
+    "sentence_length": "medium",
+    "vocabulary_level": "standard",
+    "imagery_density": 0.5,
+    "dialogue_ratio": 0.3,
+    "techniques": [],
+    "sample_passage": ""
+  }
+]

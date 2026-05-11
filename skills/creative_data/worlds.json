@@ -1,0 +1,26 @@
+[
+  {
+    "world_id": "a84e29349177",
+    "name": "Neo-Eden",
+    "genre": "cyberpunk",
+    "description": "A megacity where AI and humanity collide",
+    "geography": [
+      "coastal cliffs",
+      "dense forests",
+      "archipelago"
+    ],
+    "cultures": [
+      "religious order",
+      "free cities"
+    ],
+    "magic_system": "",
+    "technology": "Advanced but stratified — high-tech for the rich, low-tech for the rest",
+    "history": [],
+    "rules": [
+      "Corporations are more powerful than governments",
+      "Identity is fluid in the digital age",
+      "The street finds its own uses for things"
+    ],
+    "tone": "rebellious"
+  }
+]

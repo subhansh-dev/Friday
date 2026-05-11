@@ -2,28 +2,27 @@
   "meta": {
     "version": 1,
     "created": "2026-05-11T21:04:44.056697",
-    "last_update": "2026-05-11T21:07:34.691569",
-    "total_requests": 6,
+    "last_update": "2026-05-11T21:28:29.014512",
+    "total_requests": 7,
     "total_fast_path": 0,
-    "total_deliberative": 6
+    "total_deliberative": 7
   },
   "metrics": {
-    "total_requests": 5,
+    "total_requests": 1,
     "fast_path_count": 0,
-    "deliberative_count": 5,
+    "deliberative_count": 1,
     "avg_fast_ms": 0.0,
     "avg_deliberative_ms": 0.6,
     "module_invocations": {
-      "intuition": 5,
-      "metacognitive": 5,
-      "emotional": 5,
+      "intuition": 1,
+      "metacognitive": 1,
+      "emotional": 1,
       "competition": 1
     },
     "module_failures": {
-      "competition": 4,
-      "creativity": 5
+      "creativity": 1
     },
-    "avg_confidence": 0.011
+    "avg_confidence": 0.0
   },
   "recent_traces": [
     {
@@ -358,6 +357,69 @@
       "request_hash": "098f6bcd4621",
       "strategy_used": "default",
       "timestamp": "2026-05-11T21:07:34.691048"
+    },
+    {
+      "response": "Deliberative analysis of: Research the latest advances in quantum computing... | Evidence from: intuition_gut(0.00) | Key insight (intuition_gut): deliberate",
+      "confidence": 0.0,
+      "modules_used": [
+        "intuition",
+        "metacognitive",
+        "emotional",
+        "competition"
+      ],
+      "reasoning_trace": [
+        {
+          "module": "intuition",
+          "action": "recognize",
+          "result_summary": null,
+          "duration_ms": 0.03,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:28:29.013942"
+        },
+        {
+          "module": "metacognitive",
+          "action": "suggest_strategy",
+          "result_summary": "default",
+          "duration_ms": 0.01,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:28:29.013955"
+        },
+        {
+          "module": "emotional",
+          "action": "get_emotional_context",
+          "result_summary": "curiosity",
+          "duration_ms": 0.3,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:28:29.014244"
+        },
+        {
+          "module": "competition",
+          "action": "compete",
+          "result_summary": "{'allocation': {'round_id': 'round_1778506109014', 'primary': {'module': 'code_intelligence', 'score': 0.165, 'slot_id': 'primary_1778506109014'}, 'ad",
+          "duration_ms": 0.47,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:28:29.014416"
+        },
+        {
+          "module": "intuition",
+          "action": "generate_intuitive_judgment",
+          "result_summary": "no_intuition",
+          "duration_ms": 0.52,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:28:29.014467"
+        }
+      ],
+      "emotional_state": {
+        "valence": -0.003,
+        "arousal": 0.182,
+        "label": "curiosity",
+        "timestamp": "2026-05-11T21:28:29.003354"
+      },
+      "path": "deliberative",
+      "duration_ms": 0.62,
+      "request_hash": "4a8fccafc20d",
+      "strategy_used": "default",
+      "timestamp": "2026-05-11T21:28:29.013895"
     }
   ]
 }

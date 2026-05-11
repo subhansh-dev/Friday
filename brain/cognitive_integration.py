@@ -335,6 +335,15 @@ class CognitiveIntegration:
             elif name == "global_workspace":
                 from brain.global_workspace import get_global_workspace
                 mod = get_global_workspace()
+            elif name == "research":
+                from skills.research_agent import get_research_agent
+                mod = get_research_agent()
+            elif name == "creative":
+                from skills.creative_studio import get_creative_studio
+                mod = get_creative_studio()
+            elif name == "document":
+                from skills.document_intelligence import get_document_intelligence
+                mod = get_document_intelligence()
             else:
                 return None
 
@@ -905,6 +914,7 @@ class CognitiveIntegration:
             "analogy", "creativity", "world_model", "neurosymbolic",
             "self_awareness", "learning", "episodic", "procedural",
             "competition", "active_inference", "global_workspace",
+            "research", "creative", "document",
         ]
 
         status = {}

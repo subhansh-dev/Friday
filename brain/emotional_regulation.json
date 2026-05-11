@@ -2,7 +2,7 @@
   "meta": {
     "version": 1,
     "created": "2026-05-11T21:04:44.052621",
-    "last_update": "2026-05-11T21:07:34.692484",
+    "last_update": "2026-05-11T21:28:29.015226",
     "total_markers": 1,
     "total_regulations": 0,
     "total_reappraisals": 2
@@ -29,51 +29,15 @@
       "arousal": 0.3,
       "emotion_label": "satisfaction",
       "importance": 0.8,
-      "created_at": "2026-05-11T21:07:34.673528"
+      "created_at": "2026-05-11T21:28:29.003350"
     }
   ],
   "mood_history": [
     {
-      "valence": -0.003,
-      "arousal": 0.182,
+      "valence": -0.032,
+      "arousal": 0.157,
       "label": "curiosity",
-      "timestamp": "2026-05-11T21:07:34.691915"
-    },
-    {
-      "valence": 0.48,
-      "arousal": 0.59,
-      "label": "curiosity",
-      "timestamp": "2026-05-11T21:07:34.672145"
-    },
-    {
-      "valence": 0.306,
-      "arousal": 0.443,
-      "label": "curiosity",
-      "timestamp": "2026-05-11T21:07:34.687556"
-    },
-    {
-      "valence": 0.184,
-      "arousal": 0.34,
-      "label": "curiosity",
-      "timestamp": "2026-05-11T21:07:34.688669"
-    },
-    {
-      "valence": 0.099,
-      "arousal": 0.268,
-      "label": "curiosity",
-      "timestamp": "2026-05-11T21:07:34.689740"
-    },
-    {
-      "valence": 0.039,
-      "arousal": 0.218,
-      "label": "curiosity",
-      "timestamp": "2026-05-11T21:07:34.690872"
-    },
-    {
-      "valence": -0.003,
-      "arousal": 0.182,
-      "label": "curiosity",
-      "timestamp": "2026-05-11T21:07:34.691918"
+      "timestamp": "2026-05-11T21:28:29.015205"
     }
   ],
   "regulation_log": [],
@@ -93,14 +57,14 @@
     "curiosity:situation_selection": {
       "emotion": "curiosity",
       "strategy": "situation_selection",
-      "uses": 7,
+      "uses": 8,
       "reported_effective": 0
     }
   },
   "current_mood": {
-    "valence": -0.003,
-    "arousal": 0.182,
+    "valence": -0.032,
+    "arousal": 0.157,
     "label": "curiosity",
-    "timestamp": "2026-05-11T21:07:34.691915"
+    "timestamp": "2026-05-11T21:28:29.015201"
   }
 }

@@ -24,9 +24,9 @@
 
 -> Friday is still experimental and also expect some bugs as im a solo developer with hardware limitations🥀<-
 
-> **⚠️ IMPORTANT WARNING — READ BEFORE USE**
+> **⚠️ IMPORTANT — READ BEFORE USE**
 >
-> F.R.I.D.A.Y. is a powerful AI assistant with advanced cybersecurity capabilities including vulnerability scanning, penetration testing tools, and exploit analysis. **These features are intended ONLY for:**
+> F.R.I.D.A.Y. is an autonomous cognitive AI operating system with capabilities spanning research, creative writing, document analysis, coding, system control, and security analysis. It includes **optional** cybersecurity features (vulnerability scanning, penetration testing tools) that are intended **ONLY** for:
 > - Authorized security research on systems you own or have explicit permission to test
 > - Educational purposes in controlled environments
 > - Defensive security operations on your own infrastructure
@@ -53,7 +53,10 @@
 - [Why F.R.I.D.A.Y](#-why-friday)
 - [Features At A Glance](#-features-at-a-glance)
 - [Cognitive Architecture](#-cognitive-architecture)
-- [Core Brain Systems (34 Modules)](#-core-brain-systems-34-modules)
+- [Core Brain Systems (38 Modules)](#-core-brain-systems-38-modules)
+- [Autonomous Research Agent](#-autonomous-research-agent)
+- [Creative Studio](#-creative-studio)
+- [Document Intelligence](#-document-intelligence)
 - [Cognitive Coding Engine](#-cognitive-coding-engine)
 - [Cybersecurity Pipeline](#%EF%B8%8F-cybersecurity-pipeline)
 - [Skill Engine (56 Tools)](#-skill-engine-56-tools)
@@ -76,9 +79,9 @@
 
 ## 🌟 About F.R.I.D.A.Y
 
-**F.R.I.D.A.Y.** is a next-generation **Autonomous Cognitive AI Operating System** — not a chatbot, not a wrapper around an API. A full cognitive architecture with real-time voice interaction, 34 brain modules, 56 tool actions, advanced cybersecurity pipelines, neural memory systems, and autonomous decision-making.
+**F.R.I.D.A.Y.** is a next-generation **Autonomous Cognitive AI Operating System** — not a chatbot, not a wrapper around an API. A full cognitive architecture with real-time voice interaction, 38 cognitive modules, autonomous research and creative writing engines, document intelligence, 56 tool actions, neural memory systems, and autonomous decision-making.
 
-**81,500+ lines of Python. 162 source files. Zero shortcuts.** *(~101,000 lines total counting everything — configs, docs, assets, the works.)*
+**85,000+ lines of Python. 170+ source files. Zero shortcuts.** *(~105,000 lines total counting everything — configs, docs, assets, the works.)*
 
 Built as the spiritual successor to Jarvis-MT67, Friday represents a new paradigm in AI assistance — not just responding to commands, but actively learning, anticipating needs, and evolving with each interaction.
 
@@ -88,11 +91,12 @@ Built as the spiritual successor to Jarvis-MT67, Friday represents a new paradig
 |---------------------------|---------------|
 | Stateless — forgets you every session | **Neural memory** with Hebbian learning across sessions |
 | Reactive — waits for commands | **Proactive** — anticipates needs, idle exploration |
-| Single model, single purpose | **34 brain modules** coordinating via Global Workspace |
+| Single model, single purpose | **38 cognitive modules** coordinating via Global Workspace |
 | No self-awareness | **Self-model** tracks capabilities, confidence, growth |
 | No learning from mistakes | **Dreaming system** replays experiences, extracts patterns |
 | Generic responses | **Theory of mind** models the user's state and preferences |
 | One voice, one tone | **10 voice emotions** with natural accent |
+| Can't research or create | **Autonomous research**, **creative writing**, **document analysis** built-in |
 | Manual security scanning | **Dual security pipelines** (Mythos + Cyber Reasoning) |
 
 ---
@@ -150,9 +154,11 @@ System 2 (complex): Plan → Simulate → Execute → Verify → Reflect → Lea
 
 | Category | What It Does |
 |----------|-------------|
-| 🧠 **Cognition** | 34 brain modules — self-awareness, active inference, dreaming, curiosity, learning, cognitive appraisal, cognitive load, metacognitive monitoring, procedural memory, episodic memory, vector memory, code intelligence, cyber reasoning |
+| 🧠 **Cognition** | 38 cognitive modules — self-awareness, active inference, intuition engine, metacognitive monitor, emotional regulation, dreaming, curiosity, learning, procedural memory, episodic memory, vector memory, code intelligence |
+| 🔬 **Research** | **Autonomous research agent** — knowledge graph construction, entity extraction, claim tracking, contradiction detection, multi-source synthesis, citation management |
+| ✍️ **Creative** | **Creative studio** — story planning (4 structures), world building, character engine, 6 style profiles, 8 poetry forms, beat guidance, dialogue system |
+| 📄 **Documents** | **Document intelligence** — contract review with risk assessment, argument mapping, fallacy detection, bias detection, reading level analysis, cross-document reasoning |
 | 🎙️ **Voice** | Real-time Gemini Live API conversation, 10 voice emotions, 5 voice types |
-| 🛡️ **Security** | Mythos 7-agent static analysis pipeline + Cyber Reasoning engine with 3-round adversarial verification, exploit chain building, 5-axis grading |
 | 💻 **Coding** | Cognitive coding engine with semantic graph, hierarchical planning (EFE), predictive simulation, reflective debugging |
 | 🤖 **Agents** | 24+ specialized expert agents (security engineer, frontend dev, code reviewer, etc.) |
 | 🖥️ **System** | Mouse/keyboard control, app launching, system settings, desktop management |
@@ -163,6 +169,7 @@ System 2 (complex): Plan → Simulate → Execute → Verify → Reflect → Lea
 | 🧬 **Memory** | 6 memory types — neural, episodic, vector, procedural, working, global workspace |
 | 🔄 **Learning** | Error-driven updates, Q-learning, metacognitive reflection, experience replay |
 | 🔔 **Proactive** | Idle check-ins (5/15/30min tiers), returning-user greetings, reminder monitoring, quiet hours |
+| 🛡️ **Security** | Mythos 7-agent static analysis + Cyber Reasoning engine with adversarial verification (optional module) |
 
 ---
 
@@ -266,7 +273,7 @@ Friday's cognitive architecture is grounded in peer-reviewed research from neuro
 
 ---
 
-## 🧠 Core Brain Systems (34 Modules)
+## 🧠 Core Brain Systems (38 Modules)
 
 F.R.I.D.A.Y.'s brain lives in `brain/` — 14 interconnected modules totaling **32,800+ lines**.
 
@@ -491,6 +498,145 @@ F.R.I.D.A.Y.'s brain lives in `brain/` — 14 interconnected modules totaling **
 
 ---
 
+## 🔬 Autonomous Research Agent (`skills/research_agent.py`)
+
+A **cognitive research system** — not search-and-summarize, but autonomous deep research with knowledge graph construction, citation tracking, and contradiction detection.
+
+### What It Does
+
+| Capability | Description |
+|-----------|-------------|
+| **Knowledge Graph** | Automatically builds a graph of entities, relationships, and claims from research material. Persists across sessions — the more you research, the smarter it gets. |
+| **Query Decomposition** | Breaks complex questions into sub-questions. "What are quantum computers and how do they compare to classical?" → 3 focused sub-questions. |
+| **Research Planning** | Categorizes queries (current events, causal, comparative, historical) and plans optimal research strategy. |
+| **Entity Extraction** | Identifies concepts, technologies, organizations, acronyms from any text — no ML dependencies. |
+| **Claim Tracking** | Every finding has sources, confidence scores, supporting/contradicting counts. Claims get stronger with more sources. |
+| **Contradiction Detection** | Automatically finds conflicting claims across sources and flags them for resolution. |
+| **Iterative Deepening** | Starts broad, identifies promising threads, then drills down — mirrors expert research behavior. |
+
+### Research Pipeline
+
+```
+Query → Decompose → Plan Strategy → Gather Sources → Extract Entities
+  → Extract Claims → Build Relations → Detect Contradictions → Synthesize Report
+```
+
+### Example
+
+```python
+from skills.research_agent import get_research_agent
+agent = get_research_agent()
+
+# Full autonomous research
+report = agent.research("What are the latest advances in quantum error correction?")
+# Returns: findings, knowledge graph, contradictions, confidence scores
+
+# Query the knowledge graph
+agent.query_entity("surface code")  # → entity + all connections
+
+# Stats
+agent.get_graph_stats()  # → entities: 47, relations: 83, claims: 29
+```
+
+---
+
+## ✍️ Creative Studio (`skills/creative_studio.py`)
+
+A **full creative writing and storytelling system** — plans narratives, builds worlds, develops characters, manages tone, and produces structured creative works.
+
+### What It Does
+
+| Capability | Description |
+|-----------|-------------|
+| **4 Story Structures** | Three-Act, Hero's Journey, Freytag's Pyramid, Kishōtenketsu (Japanese) — each with detailed beat breakdowns. |
+| **World Builder** | Creates consistent fictional worlds with geography, cultures, magic/tech systems, history, and rules. |
+| **Character Engine** | Multi-dimensional characters with traits, flaws, motivations, backstory, arc, voice notes, and relationship webs. |
+| **6 Genre Presets** | Sci-fi, fantasy, noir, horror, literary, cyberpunk — each with themes, tones, and setting suggestions. |
+| **8 Poetry Forms** | Haiku, tanka, sonnet, limerick, villanelle, free verse, acrostic, couplet — with syllable/rhyme specs. |
+| **6 Style Profiles** | Hemingway, Tolkien, hardboiled noir, cyberpunk, literary fiction, minimalist — with vocabulary, rhythm, and technique markers. |
+| **Beat Guidance** | Per-scene writing guidance tied to story structure: what should happen, emotional tone, and writing tips. |
+
+### Story Structures
+
+| Structure | Origin | Acts |
+|-----------|--------|------|
+| **Three-Act** | Syd Field (screenwriting) | Setup → Confrontation → Resolution |
+| **Hero's Journey** | Joseph Campbell (mythology) | Departure → Initiation → Return |
+| **Freytag's Pyramid** | Gustav Freytag (drama) | Exposition → Rising → Climax → Falling → Denouement |
+| **Kishōtenketsu** | East Asian storytelling | Introduction → Development → Twist → Reconciliation |
+
+### Example
+
+```python
+from skills.creative_studio import get_creative_studio
+studio = get_creative_studio()
+
+# Plan a sci-fi story
+plan = studio.plan_story(genre="sci-fi", theme="first contact", structure="heros_journey")
+
+# Create a character
+hero = studio.create_character("Elena Voss", role="protagonist", genre="sci-fi")
+# → traits: ["determined", "conflicted", "brave"], flaws: ["impulsive", "distrustful"]
+
+# Build a world
+world = studio.build_world("Neo-Eden", genre="cyberpunk", description="A megacity where AI and humanity collide")
+
+# Get writing guidance for a specific beat
+guidance = studio.generate_beat_guidance("catalyst", "sci-fi", ["Elena"])
+# → purpose, tone, genre_notes
+```
+
+---
+
+## 📄 Document Intelligence (`skills/document_intelligence.py`)
+
+A **cognitive document analysis system** — deep understanding of contracts, research papers, reports, and any text. Far beyond simple summarization.
+
+### What It Does
+
+| Capability | Description |
+|-----------|-------------|
+| **Contract Review** | Extracts clauses (22 types), assesses risk (high/medium/low), identifies unusual terms, generates recommendations. |
+| **Argument Mapping** | Toulmin model: claims, evidence, assumptions, warrants, counterarguments, strength scoring. |
+| **Fallacy Detection** | 7 logical fallacy patterns: ad hominem, straw man, false dilemma, appeal to authority, slippery slope, bandwagon, circular reasoning. |
+| **Bias Detection** | Loaded language, one-sided presentation, excessive certainty — with severity ratings. |
+| **Reading Level** | Flesch-Kincaid scoring, vocabulary richness, grade level assessment (elementary → graduate). |
+| **Entity Extraction** | Dates, money, percentages, organizations, emails, URLs — structured extraction from unstructured text. |
+| **Action Item Extraction** | TODOs, deadlines, obligations, must/should/shall statements. |
+| **Cross-Document Reasoning** | Compares vocabularies, finds overlaps, synthesizes across multiple documents. |
+
+### Contract Risk Assessment
+
+| Risk Level | Example Terms | Recommendation |
+|-----------|---------------|----------------|
+| 🔴 **High** | Unlimited liability, personal guarantee, irrevocable, perpetual | Negotiate caps and termination conditions |
+| 🟡 **Medium** | Reasonable efforts, sole discretion, subject to change | Define measurable standards |
+| 🟢 **Low** | In writing, mutual agreement, good faith, cure period | Standard terms |
+
+### Example
+
+```python
+from skills.document_intelligence import get_document_intelligence
+di = get_document_intelligence()
+
+# Analyze a contract
+result = di.analyze_document(contract_text, doc_type="contract", title="Service Agreement")
+# → clauses: 7 found, risks: 3 high/5 medium, unusual_terms: 2
+
+# Analyze a research paper
+result = di.analyze_document(paper_text, doc_type="research_paper", title="Quantum Computing Survey")
+# → arguments: 12, limitations: 4, reading_level: graduate
+
+# Compare documents
+comparison = di.compare_documents([
+    {"text": paper_a, "title": "Study A"},
+    {"text": paper_b, "title": "Study B"},
+])
+# → vocabulary_overlap: 34%, shared_concepts: [...]
+```
+
+---
+
 ## 💻 Cognitive Coding Engine
 
 A complete **expert-programmer cognition system** — not just code generation, but *thinking about code* the way an expert does.
@@ -521,9 +667,11 @@ User Goal → [Perceive] → [Plan] → [Simulate] → [Execute] → [Debug] →
 
 ---
 
-## 🛡️ Cybersecurity Pipeline
+## 🛡️ Cybersecurity Pipeline (Optional Module)
 
-F.R.I.D.A.Y. has a **multi-layered security architecture** with 39 Python files totaling **12,100+ lines** across `cyber/`, `brain/cyber_reasoning.py`, and `actions/security_tools.py`. Inspired by [Bounty Hunter](https://github.com/deonmenezes/bountyhunter) (multi-agent bug bounty framework) and [Shannon](https://github.com/KeygraphHQ/shannon) (autonomous AI pentester, 20K+ stars).
+F.R.I.D.A.Y. includes an **optional multi-layered security architecture** with 39 Python files totaling **12,100+ lines** across `cyber/`, `brain/cyber_reasoning.py`, and `actions/security_tools.py`. Inspired by [Bounty Hunter](https://github.com/deonmenezes/bountyhunter) (multi-agent bug bounty framework) and [Shannon](https://github.com/KeygraphHQ/shannon) (autonomous AI pentester, 20K+ stars).
+
+> **Note:** This is one of many capabilities — Friday's core purpose is general-purpose autonomous cognition (research, creativity, document analysis, coding, system control). Security features are opt-in and require explicit user confirmation before active operations.
 
 ### Architecture
 
@@ -682,9 +830,9 @@ F.R.I.D.A.Y. **will NEVER target**:
 
 ---
 
-## 🔧 Skill Engine (56 Tools)
+## 🔧 Skill Engine (59 Tools)
 
-F.R.I.D.A.Y. exposes **56 tool actions** organized into categories:
+F.R.I.D.A.Y. exposes **59 tool actions** organized into categories:
 
 ### 🛡️ Security & Defense
 
@@ -707,6 +855,8 @@ F.R.I.D.A.Y. exposes **56 tool actions** organized into categories:
 
 | Tool | Description |
 |------|-------------|
+| `research_agent` | **Autonomous research** — knowledge graph, entity extraction, claim tracking, contradiction detection |
+| `document_intelligence` | **Document analysis** — contract review, argument mapping, fallacy/bias detection, reading level |
 | `web_search` | Quick factual search |
 | `web_research` | Deep multi-source research with page scraping |
 | `browser_control` | Full browser automation — any browser, any action |
@@ -760,6 +910,7 @@ F.R.I.D.A.Y. exposes **56 tool actions** organized into categories:
 
 | Tool | Description |
 |------|-------------|
+| `creative_studio` | **Creative writing** — story planning (4 structures), world building, character engine, 6 styles, 8 poetry forms |
 | `holo_builder` | Iron Man AR 3D builder with gesture control |
 | `holographic_map` | 3D globe with eye+hand hybrid control |
 | `holo_earth` | Google Earth in Edge app mode with hand gesture + eye gaze control (fist=zoom, point=drag, gaze=cursor, blink=click) |
@@ -1117,7 +1268,10 @@ friday/
 │   ├── config_validator.py    #   Config validation
 │   └── lock_state.py          #   System lock state
 │
-├── skills/                    # 🎯 Skill engine (2,980 lines)
+├── skills/                    # 🎯 Skill engine (2,980+ lines)
+│   ├── research_agent.py      #   Autonomous research + knowledge graph (779 lines)
+│   ├── creative_studio.py     #   Story planning + world building + characters (724 lines)
+│   ├── document_intelligence.py # Contract review + argument mapping + bias detection (959 lines)
 │   ├── cognitive_gating.py    #   Complexity assessment
 │   ├── working_memory.py      #   Active context
 │   ├── meta_reflect.py        #   Metacognition
@@ -1128,6 +1282,9 @@ friday/
 │   ├── deep_dive.py           #   Research agent
 │   ├── auto_doc.py            #   Documentation gen
 │   ├── digital_twin.py        #   Style mimicry
+│   ├── sentinel.py            #   System monitoring
+│   ├── social_pulse.py        #   Trending topics
+│   ├── neural_clipboard.py    #   Clipboard history
 │   ├── definitions/           #   24 SKILL.md files
 │   └── engine/                #   Skill loader/registry
 │
