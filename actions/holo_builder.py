@@ -6,6 +6,7 @@ holo_builder.py — Iron Man Holographic AR Builder (v4.1)
 [Click] select object | [G+drag] move | [S+drag] scale | [Del] delete
 AR Gestures (Iron Man style):
   pinch (thumb+index)  = Draw / create structures
+  pinch + flick        = Disintegrate selected object (shatter + scatter)
   fist  (all closed)   = Grab & move selected
   point (index only)   = Precision select / aim
   peace (index+middle) = Scale selected
@@ -18,6 +19,7 @@ AR Gestures (Iron Man style):
 [v4.0] Iron Man UI overhaul: radar grid, sci-fi HUD, glow effects, holographic AR
 [v4.1] Iron Man gesture overhaul: pinch-first detection, arc reactor cursor,
        repulsor sound effects, mechanical grip visuals, energy field FX
+       + pinch-to-draw, pinch+flick to disintegrate with fragment physics
 """
 import math
 import random
