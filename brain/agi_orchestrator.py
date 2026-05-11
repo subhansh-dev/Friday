@@ -24,6 +24,7 @@ Integration points (all optional, graceful degradation):
 - code_planner: hierarchical goal decomposition
 - code_simulator: code simulation
 - code_intelligence: code analysis
+- code_reasoning_engine: deep code reasoning
 - learning: Q-learning, error-driven learning
 - dreaming: replay, consolidation
 - self_model: capability tracking
@@ -31,6 +32,20 @@ Integration points (all optional, graceful degradation):
 - benchmark_runner: performance benchmarking
 - agi_benchmark_v2: autonomous cognitive architecture evaluation (v2)
 - self_modifier: self-modification analysis, safe code changes, evolution tracking
+- cognitive_integration: unified cognitive pipeline (System 1/2 routing)
+- intuition_engine: fast System 1 pattern matching, RPD decisions
+- emotional_regulation: somatic markers, mood tracking, decision pruning
+- metacognitive_monitor: thinking quality, calibration, strategy effectiveness
+- cognitive_appraisal: emotion generation from 6 appraisal dimensions
+- cognitive_load: working memory monitoring, overload detection
+- self_awareness: consciousness state tracking, theory of mind
+- neural_memory: Hebbian learning persistent memory
+- episodic_memory: timestamped event recording
+- vector_memory: semantic search embeddings
+- curiosity: novelty detection, user interest mirroring
+- proactive_engine: anticipatory suggestions
+- proactive_checkin: tiered idle check-ins
+- voice_modulator: emotion/voice control
 """
 
 import json
@@ -70,8 +85,11 @@ class AGIOrchestrator:
         self._data = self._empty_store()
         self._modules: Dict[str, Any] = {}
         self._modules_loaded = False
+        self._cognitive_wiring: Dict[str, Any] = {}
+        self._cognitive_activity: List[dict] = []
         self._load()
         self._load_modules()
+        self._wire_cognitive_modules()
 
     # ── Persistence ──────────────────────────────────────────────────────
 
@@ -147,6 +165,7 @@ class AGIOrchestrator:
             "code_planner": ("brain.code_planner", "get_code_planner"),
             "code_simulator": ("brain.code_simulator", "get_code_simulator"),
             "code_intelligence": ("brain.code_intelligence", "get_code_intelligence"),
+            "code_reasoning_engine": ("brain.code_reasoning_engine", "get_code_reasoning_engine"),
             "learning_engine": ("brain.learning", "get_learning_engine"),
             "dreaming_system": ("brain.dreaming", "get_dreaming_system"),
             "self_model": ("brain.self_model", "get_self_model"),
@@ -159,6 +178,30 @@ class AGIOrchestrator:
             "creativity_engine": ("brain.creativity_engine", "get_creativity_engine"),
             "meta_learner": ("brain.meta_learner", "get_meta_learner"),
             "self_modifier": ("brain.self_modifier", "get_self_modifier"),
+            "module_competition": ("brain.module_competition", "get_module_competition"),
+            "narrative_intelligence": ("brain.narrative_intelligence", "get_narrative_intelligence"),
+            "enhanced_world_model": ("brain.enhanced_world_model", "get_enhanced_world_model"),
+            "integrated_info": ("brain.integrated_info", "get_integrated_info"),
+            "findings_bus": ("brain.findings_bus", "get_findings_bus"),
+            "model_router": ("brain.model_router", "get_model_router"),
+            # Cognitive integration & System 1/2 routing
+            "cognitive_integration": ("brain.cognitive_integration", "get_cognitive_integration"),
+            "intuition_engine": ("brain.intuition_engine", "get_intuition_engine"),
+            # Emotional & metacognitive systems
+            "emotional_regulation": ("brain.emotional_regulation", "get_emotional_regulation"),
+            "metacognitive_monitor": ("brain.metacognitive_monitor", "get_metacognitive_monitor"),
+            "cognitive_appraisal": ("brain.cognitive_appraisal", "get_cognitive_appraisal"),
+            "cognitive_load": ("brain.cognitive_load", "get_cognitive_load_manager"),
+            # Memory systems (also loaded directly in main.py)
+            "self_awareness": ("brain.self_awareness", "get_self_awareness"),
+            "neural_memory": ("brain.neural_memory", "get_brain"),
+            "episodic_memory": ("brain.episodic_memory", "get_episodic_memory"),
+            "vector_memory": ("brain.vector_memory", "get_vector_memory"),
+            "curiosity": ("brain.curiosity", "get_curiosity_module"),
+            # Proactive & voice
+            "proactive_engine": ("brain.proactive_engine", "get_proactive_engine"),
+            "proactive_checkin": ("brain.proactive_checkin", "get_proactive_checkin"),
+            "voice_modulator": ("brain.voice_modulator", "get_voice_modulator"),
         }
 
         for name, (module_path, func_name) in module_loaders.items():
@@ -181,6 +224,443 @@ class AGIOrchestrator:
     def _get_module(self, name: str) -> Any:
         """Get a loaded module or None."""
         return self._modules.get(name)
+
+    # ── Cognitive Module Wiring ──────────────────────────────────────────
+
+    def _wire_cognitive_modules(self) -> None:
+        """Connect cognitive modules to orchestrator stages."""
+        wiring = {
+            "planning": ["analogy_engine", "creativity_engine", "hierarchical_aif",
+                         "intuition_engine"],
+            "reflection": ["causal_reasoner", "meta_learner", "narrative_intelligence",
+                           "metacognitive_monitor"],
+            "simulation": ["world_model", "enhanced_world_model"],
+            "verification": ["neurosymbolic_reasoner", "code_reasoning_engine"],
+            "improvement": ["self_improve_engine", "transfer_learning"],
+            "competition": ["module_competition"],
+            "consciousness": ["integrated_info", "self_awareness"],
+            "routing": ["model_router", "cognitive_integration"],
+            "communication": ["findings_bus"],
+            "emotional": ["emotional_regulation", "cognitive_appraisal"],
+            "memory": ["neural_memory", "episodic_memory", "vector_memory",
+                       "memory_coordinator", "procedural_memory"],
+            "metacognition": ["metacognitive_monitor", "cognitive_load"],
+            "exploration": ["curiosity", "proactive_engine"],
+        }
+        for stage, module_names in wiring.items():
+            available = [n for n in module_names if self._modules.get(n) is not None]
+            self._cognitive_wiring[stage] = available
+
+        available_count = sum(
+            1 for v in self._cognitive_wiring.values() for _ in v
+        )
+        print(f"[AGIOrchestrator] Cognitive wiring: {available_count} connections across "
+              f"{len(self._cognitive_wiring)} stages")
+
+    def process_cognitive_request(self, request: str, context: str = "",
+                                   depth: str = "normal") -> dict:
+        """
+        Process a cognitive request using module competition and orchestration.
+
+        Args:
+            request: The cognitive request string.
+            context: Additional context.
+            depth: Processing depth — "quick", "normal", or "deep".
+
+        Returns:
+            Dict with reasoning trace, module contributions, and response.
+        """
+        start_time = time.time()
+        result: Dict[str, Any] = {
+            "request": request[:300],
+            "depth": depth,
+            "trace": [],
+            "modules_used": [],
+        }
+
+        # Step 1: Use module_competition to decide which modules handle it
+        competition = self._get_module("module_competition")
+        competition_result = None
+        if competition:
+            try:
+                competition_result = competition.compete(
+                    request, context={"context": context, "depth": depth}
+                )
+                result["competition"] = {
+                    "winner": competition_result.get("winner", {}).get("module_name", "none"),
+                    "runners_up": [
+                        r.get("module_name", "?")
+                        for r in competition_result.get("runners_up", [])
+                    ],
+                }
+                result["trace"].append("module_competition: selected modules")
+            except Exception as e:
+                result["trace"].append(f"module_competition error: {str(e)[:100]}")
+
+        # Step 2: Run winning modules based on depth
+        depth_config = {
+            "quick": {"max_modules": 2, "timeout_per_module": 5},
+            "normal": {"max_modules": 4, "timeout_per_module": 15},
+            "deep": {"max_modules": 8, "timeout_per_module": 30},
+        }
+        config = depth_config.get(depth, depth_config["normal"])
+
+        # Collect candidate modules from competition or wiring
+        candidates = []
+        if competition_result and competition_result.get("winner"):
+            winner_name = competition_result["winner"].get("module_name", "")
+            if winner_name and self._modules.get(winner_name):
+                candidates.append(winner_name)
+            for r in competition_result.get("runners_up", []):
+                name = r.get("module_name", "")
+                if name and self._modules.get(name):
+                    candidates.append(name)
+
+        # Ensure key modules are included
+        for stage_modules in self._cognitive_wiring.values():
+            for m in stage_modules:
+                if m not in candidates and self._modules.get(m):
+                    candidates.append(m)
+
+        # Limit by depth
+        candidates = candidates[:config["max_modules"]]
+
+        # Step 3: Execute each module
+        for mod_name in candidates:
+            mod = self._modules.get(mod_name)
+            if not mod:
+                continue
+            try:
+                mod_result = self._invoke_cognitive_module(
+                    mod_name, mod, request, context, depth
+                )
+                if mod_result:
+                    result["modules_used"].append(mod_name)
+                    result[f"result_{mod_name}"] = mod_result
+                    result["trace"].append(f"{mod_name}: contributed")
+            except Exception as e:
+                result["trace"].append(f"{mod_name} error: {str(e)[:80]}")
+
+        # Step 4: Synthesize response
+        result["modules_count"] = len(result["modules_used"])
+        elapsed = time.time() - start_time
+        result["elapsed_seconds"] = round(elapsed, 3)
+
+        # Record activity
+        with self._lock:
+            self._cognitive_activity.append({
+                "request": request[:100],
+                "modules_used": result["modules_used"],
+                "elapsed": elapsed,
+                "timestamp": time.time(),
+            })
+            if len(self._cognitive_activity) > 100:
+                self._cognitive_activity = self._cognitive_activity[-100:]
+
+        self._publish_event("cognitive_request", {
+            "request": request[:100],
+            "modules_used": result["modules_used"],
+            "elapsed": round(elapsed, 3),
+        })
+
+        return result
+
+    def _invoke_cognitive_module(self, name: str, mod: Any,
+                                  request: str, context: str, depth: str) -> Optional[dict]:
+        """Invoke a single cognitive module with the request."""
+        # Each module has different interfaces — try common patterns
+        if name == "analogy_engine":
+            if hasattr(mod, "extract_relational_structure"):
+                structure = mod.extract_relational_structure(request[:500])
+                return {"structure": structure.to_dict() if hasattr(structure, "to_dict") else str(structure)}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "causal_reasoner":
+            if hasattr(mod, "find_causes"):
+                causes = mod.find_causes(request[:200], max_depth=3)
+                return {"causes": [str(c)[:80] for c in (causes or [])[:5]]}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "creativity_engine":
+            if hasattr(mod, "generate_alternatives"):
+                ideas = mod.generate_alternatives(
+                    problem={"description": request[:200], "domain": "general"},
+                    existing_solution={"method": "standard"},
+                    n=3 if depth == "quick" else 5,
+                )
+                return {"ideas": [str(i)[:100] for i in (ideas or [])[:5]]}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "meta_learner":
+            if hasattr(mod, "get_strategy_report"):
+                report = mod.get_strategy_report("cognitive_request")
+                return {"strategy_report": report}
+            if hasattr(mod, "get_all_domains"):
+                return {"domains": mod.get_all_domains()}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "narrative_intelligence":
+            if hasattr(mod, "explain_what_happened"):
+                explanation = mod.explain_what_happened(
+                    {"description": request[:200]}, context=context[:200]
+                )
+                return {"narrative": str(explanation)[:300]}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "neurosymbolic_reasoner":
+            if hasattr(mod, "abstract_to_symbolic"):
+                props = mod.abstract_to_symbolic(request[:200])
+                return {"propositions": [str(p)[:80] for p in (props or [])[:5]]}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "world_model":
+            if hasattr(mod, "get_state_features"):
+                features = mod.get_state_features()
+                return {"features": {k: str(v)[:50] for k, v in list(features.items())[:5]}}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "enhanced_world_model":
+            if hasattr(mod, "get_state_features"):
+                features = mod.get_state_features()
+                return {"features": {k: str(v)[:50] for k, v in list(features.items())[:5]}}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "hierarchical_aif":
+            if hasattr(mod, "select_action"):
+                actions = [w for w in request.lower().split() if len(w) > 3]
+                if actions:
+                    action, info = mod.select_action(actions[:10])
+                    return {"selected_action": action, "info": str(info)[:200]}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "transfer_learning":
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "self_improve_engine":
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "integrated_info":
+            if hasattr(mod, "get_consciousness_for_orchestrator"):
+                return mod.get_consciousness_for_orchestrator()
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "model_router":
+            if hasattr(mod, "get_route"):
+                provider, model_id = mod.get_route(request[:200])
+                return {"provider": str(provider), "model_id": str(model_id)}
+
+        elif name == "findings_bus":
+            if hasattr(mod, "read_recent"):
+                findings = mod.read_recent(hours=24)
+                return {"recent_findings": len(findings or [])}
+
+        # ── Newly wired modules ──────────────────────────────────────
+
+        elif name == "intuition_engine":
+            if hasattr(mod, "generate_intuitive_judgment"):
+                judgment = mod.generate_intuitive_judgment(request[:300])
+                return {"judgment": judgment}
+            if hasattr(mod, "recognize"):
+                result_tuple = mod.recognize(request[:300])
+                if result_tuple and result_tuple[0]:
+                    return {"recognized_pattern": result_tuple[0], "confidence": result_tuple[1]}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "emotional_regulation":
+            if hasattr(mod, "get_current_mood"):
+                mood = mod.get_current_mood()
+                return {"mood": mood}
+            if hasattr(mod, "apply_somatic_markers"):
+                # Build options from request for marker application
+                options = [{"action": "respond", "context": request[:200]}]
+                marked = mod.apply_somatic_markers(options)
+                return {"marked_options": len(marked or [])}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "metacognitive_monitor":
+            if hasattr(mod, "check_cognitive_load"):
+                load_state = mod.check_cognitive_load()
+                return {"cognitive_load": load_state.to_dict() if hasattr(load_state, "to_dict") else str(load_state)}
+            if hasattr(mod, "get_calibration_report"):
+                report = mod.get_calibration_report()
+                return {"calibration": report}
+            if hasattr(mod, "suggest_strategy"):
+                suggestion = mod.suggest_strategy("cognitive_request", context[:200])
+                return {"strategy_suggestion": suggestion}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "cognitive_appraisal":
+            if hasattr(mod, "appraise"):
+                appraisal = mod.appraise(request[:200], context={"depth": depth})
+                return {"appraisal": appraisal}
+            if hasattr(mod, "get_status"):
+                return mod.get_status()
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "cognitive_load":
+            if hasattr(mod, "get_active_load"):
+                load = mod.get_active_load()
+                return {"active_load": load}
+            if hasattr(mod, "check_overload"):
+                overload = mod.check_overload()
+                return {"overload_check": overload}
+            if hasattr(mod, "get_status"):
+                return mod.get_status()
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "cognitive_integration":
+            if hasattr(mod, "process_request"):
+                ci_result = mod.process_request(request[:300], context={"depth": depth, "context": context})
+                return {"cognitive_response": ci_result.to_dict() if hasattr(ci_result, "to_dict") else str(ci_result)[:300]}
+            if hasattr(mod, "health_check"):
+                return mod.health_check()
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "self_awareness":
+            if hasattr(mod, "get_consciousness_state"):
+                state = mod.get_consciousness_state()
+                return {"consciousness_state": {k: str(v)[:60] for k, v in list(state.items())[:8]}}
+            if hasattr(mod, "get_current_state"):
+                return {"current_state": mod.get_current_state()}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "curiosity":
+            if hasattr(mod, "get_user_top_interests"):
+                interests = mod.get_user_top_interests(limit=5)
+                return {"user_interests": interests}
+            if hasattr(mod, "get_related_suggestions"):
+                suggestions = mod.get_related_suggestions()
+                return {"suggestions": suggestions[:5] if suggestions else []}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "neural_memory":
+            if hasattr(mod, "recall"):
+                memories = mod.recall(request[:200], limit=5)
+                return {"recalled_memories": len(memories or [])}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "episodic_memory":
+            if hasattr(mod, "search"):
+                events = mod.search(request[:200], limit=5)
+                return {"matching_events": len(events or [])}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "vector_memory":
+            if hasattr(mod, "search"):
+                results = mod.search(request[:200], limit=5)
+                return {"vector_matches": len(results or [])}
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "code_reasoning_engine":
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "proactive_engine":
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "proactive_checkin":
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        elif name == "voice_modulator":
+            if hasattr(mod, "get_stats"):
+                return mod.get_stats()
+
+        # Generic fallback
+        if hasattr(mod, "get_stats"):
+            try:
+                return mod.get_stats()
+            except Exception:
+                pass
+        return None
+
+    def get_cognitive_status(self) -> dict:
+        """
+        Get comprehensive status of all cognitive modules.
+
+        Returns:
+            Dict with module availability, health, recent activity,
+            and consciousness level.
+        """
+        module_details: Dict[str, dict] = {}
+        for name, module in self._modules.items():
+            info: Dict[str, Any] = {"available": module is not None}
+            if module is not None:
+                try:
+                    if hasattr(module, "get_stats"):
+                        stats = module.get_stats()
+                        info["stats_summary"] = {
+                            k: v for k, v in list(stats.items())[:5]
+                        }
+                    info["status"] = "active"
+                except Exception as e:
+                    info["status"] = f"error: {str(e)[:80]}"
+                    info["last_error"] = str(e)[:200]
+            else:
+                info["status"] = "unavailable"
+            module_details[name] = info
+
+        # Wiring summary
+        wiring_summary: Dict[str, List[str]] = {}
+        for stage, modules in self._cognitive_wiring.items():
+            wiring_summary[stage] = modules
+
+        # Recent cognitive activity
+        with self._lock:
+            recent = list(self._cognitive_activity[-10:])
+
+        # Consciousness level from integrated_info
+        consciousness = {}
+        ii = self._get_module("integrated_info")
+        if ii:
+            try:
+                if hasattr(ii, "get_consciousness_for_orchestrator"):
+                    consciousness = ii.get_consciousness_for_orchestrator()
+                elif hasattr(ii, "get_stats"):
+                    stats = ii.get_stats()
+                    consciousness = {
+                        "phi": stats.get("phi", {}).get("current_phi", 0),
+                        "state": stats.get("consciousness", {}).get("current_state", "unknown"),
+                    }
+            except Exception as e:
+                consciousness = {"error": str(e)[:100]}
+
+        available = sum(1 for d in module_details.values() if d.get("status") == "active")
+        total = len(module_details)
+
+        return {
+            "modules": module_details,
+            "modules_available": available,
+            "modules_total": total,
+            "system_health": round(available / total, 2) if total > 0 else 0.0,
+            "wiring": wiring_summary,
+            "recent_activity": recent,
+            "consciousness": consciousness,
+        }
 
     # ── Core API ─────────────────────────────────────────────────────────
 

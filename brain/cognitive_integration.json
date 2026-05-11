@@ -1,0 +1,363 @@
+{
+  "meta": {
+    "version": 1,
+    "created": "2026-05-11T21:04:44.056697",
+    "last_update": "2026-05-11T21:07:34.691569",
+    "total_requests": 6,
+    "total_fast_path": 0,
+    "total_deliberative": 6
+  },
+  "metrics": {
+    "total_requests": 5,
+    "fast_path_count": 0,
+    "deliberative_count": 5,
+    "avg_fast_ms": 0.0,
+    "avg_deliberative_ms": 0.6,
+    "module_invocations": {
+      "intuition": 5,
+      "metacognitive": 5,
+      "emotional": 5,
+      "competition": 1
+    },
+    "module_failures": {
+      "competition": 4,
+      "creativity": 5
+    },
+    "avg_confidence": 0.011
+  },
+  "recent_traces": [
+    {
+      "response": "Deliberative analysis of: What is the weather like?... | Evidence from: intuition_gut(0.00) | Key insight (intuition_gut): deliberate",
+      "confidence": 0.0,
+      "modules_used": [
+        "intuition",
+        "metacognitive",
+        "emotional"
+      ],
+      "reasoning_trace": [
+        {
+          "module": "intuition",
+          "action": "recognize",
+          "result_summary": null,
+          "duration_ms": 0.04,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:04:44.137229"
+        },
+        {
+          "module": "metacognitive",
+          "action": "suggest_strategy",
+          "result_summary": "default",
+          "duration_ms": 0.01,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:04:44.137244"
+        },
+        {
+          "module": "emotional",
+          "action": "get_emotional_context",
+          "result_summary": "neutral",
+          "duration_ms": 0.24,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:04:44.137477"
+        },
+        {
+          "module": "intuition",
+          "action": "generate_intuitive_judgment",
+          "result_summary": "no_intuition",
+          "duration_ms": 0.35,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:04:44.137585"
+        }
+      ],
+      "emotional_state": {
+        "valence": 0.0,
+        "arousal": 0.2,
+        "label": "neutral",
+        "timestamp": "2026-05-11T21:04:44.052594"
+      },
+      "path": "deliberative",
+      "duration_ms": 0.46,
+      "request_hash": "6aa9cfd333c1",
+      "strategy_used": "default",
+      "timestamp": "2026-05-11T21:04:44.137178"
+    },
+    {
+      "response": "Deliberative analysis of: hello... | Evidence from: intuition_gut(0.00) | Key insight (intuition_gut): deliberate",
+      "confidence": 0.024,
+      "modules_used": [
+        "intuition",
+        "metacognitive",
+        "emotional"
+      ],
+      "reasoning_trace": [
+        {
+          "module": "intuition",
+          "action": "recognize",
+          "result_summary": null,
+          "duration_ms": 0.02,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.686806"
+        },
+        {
+          "module": "metacognitive",
+          "action": "suggest_strategy",
+          "result_summary": "default",
+          "duration_ms": 0.01,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.686820"
+        },
+        {
+          "module": "emotional",
+          "action": "get_emotional_context",
+          "result_summary": "curiosity",
+          "duration_ms": 0.24,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.687054"
+        },
+        {
+          "module": "intuition",
+          "action": "generate_intuitive_judgment",
+          "result_summary": "no_intuition",
+          "duration_ms": 0.38,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.687198"
+        }
+      ],
+      "emotional_state": {
+        "valence": 0.48,
+        "arousal": 0.59,
+        "label": "curiosity",
+        "timestamp": "2026-05-11T21:07:34.672141"
+      },
+      "path": "deliberative",
+      "duration_ms": 0.46,
+      "request_hash": "5d41402abc4b",
+      "strategy_used": "default",
+      "timestamp": "2026-05-11T21:07:34.686770"
+    },
+    {
+      "response": "Deliberative analysis of: Analyze the causal relationship between code complexity and bug rates in our pro... | Evidence from: intuition_gut(0.00) | Key insight (intuition_gut): deliberate",
+      "confidence": 0.015,
+      "modules_used": [
+        "intuition",
+        "metacognitive",
+        "emotional",
+        "competition"
+      ],
+      "reasoning_trace": [
+        {
+          "module": "intuition",
+          "action": "recognize",
+          "result_summary": null,
+          "duration_ms": 0.02,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.687696"
+        },
+        {
+          "module": "metacognitive",
+          "action": "suggest_strategy",
+          "result_summary": "default",
+          "duration_ms": 0.0,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.687703"
+        },
+        {
+          "module": "emotional",
+          "action": "get_emotional_context",
+          "result_summary": "curiosity",
+          "duration_ms": 0.46,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.688162"
+        },
+        {
+          "module": "competition",
+          "action": "compete",
+          "result_summary": "{'allocation': {'round_id': 'round_1778504854688', 'primary': {'module': 'code_intelligence', 'score': 0.2475, 'slot_id': 'primary_1778504854688'}, 'a",
+          "duration_ms": 0.6,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.688300"
+        },
+        {
+          "module": "intuition",
+          "action": "generate_intuitive_judgment",
+          "result_summary": "no_intuition",
+          "duration_ms": 0.64,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.688336"
+        }
+      ],
+      "emotional_state": {
+        "valence": 0.306,
+        "arousal": 0.443,
+        "label": "curiosity",
+        "timestamp": "2026-05-11T21:07:34.687552"
+      },
+      "path": "deliberative",
+      "duration_ms": 0.69,
+      "request_hash": "ad919c903a38",
+      "strategy_used": "default",
+      "timestamp": "2026-05-11T21:07:34.687669"
+    },
+    {
+      "response": "Deliberative analysis of: ... | Evidence from: intuition_gut(0.00) | Key insight (intuition_gut): deliberate",
+      "confidence": 0.009,
+      "modules_used": [
+        "intuition",
+        "metacognitive",
+        "emotional"
+      ],
+      "reasoning_trace": [
+        {
+          "module": "intuition",
+          "action": "recognize",
+          "result_summary": null,
+          "duration_ms": 0.0,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.688786"
+        },
+        {
+          "module": "metacognitive",
+          "action": "suggest_strategy",
+          "result_summary": "default",
+          "duration_ms": 0.0,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.688793"
+        },
+        {
+          "module": "emotional",
+          "action": "get_emotional_context",
+          "result_summary": "curiosity",
+          "duration_ms": 0.44,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.689229"
+        },
+        {
+          "module": "intuition",
+          "action": "generate_intuitive_judgment",
+          "result_summary": "no_intuition",
+          "duration_ms": 0.49,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.689283"
+        }
+      ],
+      "emotional_state": {
+        "valence": 0.184,
+        "arousal": 0.34,
+        "label": "curiosity",
+        "timestamp": "2026-05-11T21:07:34.688666"
+      },
+      "path": "deliberative",
+      "duration_ms": 0.52,
+      "request_hash": "d41d8cd98f00",
+      "strategy_used": "default",
+      "timestamp": "2026-05-11T21:07:34.688779"
+    },
+    {
+      "response": "Deliberative analysis of: x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x ... | Evidence from: intuition_gut(0.00) | Key insight (intuition_gut): deliberate",
+      "confidence": 0.005,
+      "modules_used": [
+        "intuition",
+        "metacognitive",
+        "emotional"
+      ],
+      "reasoning_trace": [
+        {
+          "module": "intuition",
+          "action": "recognize",
+          "result_summary": null,
+          "duration_ms": 0.16,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.690024"
+        },
+        {
+          "module": "metacognitive",
+          "action": "suggest_strategy",
+          "result_summary": "default",
+          "duration_ms": 0.0,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.690030"
+        },
+        {
+          "module": "emotional",
+          "action": "get_emotional_context",
+          "result_summary": "curiosity",
+          "duration_ms": 0.28,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.690305"
+        },
+        {
+          "module": "intuition",
+          "action": "generate_intuitive_judgment",
+          "result_summary": "no_intuition",
+          "duration_ms": 0.49,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.690518"
+        }
+      ],
+      "emotional_state": {
+        "valence": 0.099,
+        "arousal": 0.268,
+        "label": "curiosity",
+        "timestamp": "2026-05-11T21:07:34.689737"
+      },
+      "path": "deliberative",
+      "duration_ms": 0.68,
+      "request_hash": "f39bca89aeed",
+      "strategy_used": "default",
+      "timestamp": "2026-05-11T21:07:34.689857"
+    },
+    {
+      "response": "Deliberative analysis of: test... | Evidence from: intuition_gut(0.00) | Key insight (intuition_gut): deliberate",
+      "confidence": 0.002,
+      "modules_used": [
+        "intuition",
+        "metacognitive",
+        "emotional"
+      ],
+      "reasoning_trace": [
+        {
+          "module": "intuition",
+          "action": "recognize",
+          "result_summary": null,
+          "duration_ms": 0.03,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.691086"
+        },
+        {
+          "module": "metacognitive",
+          "action": "suggest_strategy",
+          "result_summary": "default",
+          "duration_ms": 0.0,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.691093"
+        },
+        {
+          "module": "emotional",
+          "action": "get_emotional_context",
+          "result_summary": "curiosity",
+          "duration_ms": 0.4,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.691494"
+        },
+        {
+          "module": "intuition",
+          "action": "generate_intuitive_judgment",
+          "result_summary": "no_intuition",
+          "duration_ms": 0.46,
+          "confidence": 0.0,
+          "timestamp": "2026-05-11T21:07:34.691545"
+        }
+      ],
+      "emotional_state": {
+        "valence": 0.039,
+        "arousal": 0.218,
+        "label": "curiosity",
+        "timestamp": "2026-05-11T21:07:34.690869"
+      },
+      "path": "deliberative",
+      "duration_ms": 0.51,
+      "request_hash": "098f6bcd4621",
+      "strategy_used": "default",
+      "timestamp": "2026-05-11T21:07:34.691048"
+    }
+  ]
+}

@@ -1,0 +1,480 @@
+{
+  "meta": {
+    "version": 1,
+    "created": "2026-05-11T21:04:44.047977",
+    "last_update": "2026-05-11T21:07:34.715846",
+    "total_calibrations": 57,
+    "total_errors_logged": 1,
+    "total_strategy_records": 0
+  },
+  "calibration_entries": [
+    {
+      "timestamp": "2026-05-11T21:04:44.137961",
+      "predicted": 0.0,
+      "actual": 0.0,
+      "error": 0.0,
+      "context": "What is the weather like?"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.670895",
+      "predicted": 0.8,
+      "actual": 0.6,
+      "error": 0.2,
+      "context": "test"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.687412",
+      "predicted": 0.024,
+      "actual": 0.024,
+      "error": 0.0,
+      "context": "hello"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.688549",
+      "predicted": 0.0153,
+      "actual": 0.0153,
+      "error": 0.0,
+      "context": "Analyze the causal relationship between code complexity and bug rates in our project"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.689595",
+      "predicted": 0.0092,
+      "actual": 0.0092,
+      "error": 0.0,
+      "context": ""
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.690758",
+      "predicted": 0.005,
+      "actual": 0.005,
+      "error": 0.0,
+      "context": "x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x "
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.691801",
+      "predicted": 0.002,
+      "actual": 0.002,
+      "error": 0.0,
+      "context": "test"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.692911",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_0"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.693019",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_1"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.693462",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_2"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.693896",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_3"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.694368",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_4"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.694817",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_5"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.695274",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_6"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.695849",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_7"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.696304",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_8"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.696784",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_9"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.697237",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_10"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.697688",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_11"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.698148",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_12"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.698597",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_13"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.699045",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_14"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.699499",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_15"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.699952",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_16"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.700416",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_17"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.700867",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_18"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.701328",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_19"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.701775",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_20"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.702230",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_21"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.702677",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_22"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.703141",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_23"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.703593",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_24"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.704230",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_25"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.704677",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_26"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.705151",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_27"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.705619",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_28"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.706087",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_29"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.706538",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_30"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.706990",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_31"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.707452",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_32"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.707938",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_33"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.708398",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_34"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.708851",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_35"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.709311",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_36"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.709769",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_37"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.710603",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_38"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.711109",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_39"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.711636",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_40"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.712128",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_41"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.712594",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_42"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.713050",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_43"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.713510",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_44"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.713967",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_45"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.714430",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_46"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.714884",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_47"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.715343",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_48"
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.715835",
+      "predicted": 0.7,
+      "actual": 0.5,
+      "error": 0.2,
+      "context": "test_49"
+    }
+  ],
+  "error_log": [
+    {
+      "timestamp": "2026-05-11T21:07:34.671436",
+      "error_type": "reasoning",
+      "description": "test error",
+      "context": "ctx"
+    }
+  ],
+  "error_patterns": {
+    "reasoning:test error": {
+      "pattern_id": "reasoning:test error",
+      "description": "[reasoning] test error",
+      "occurrences": 1,
+      "first_seen": "2026-05-11T21:07:34.671444",
+      "last_seen": "2026-05-11T21:07:34.671445",
+      "error_type": "reasoning",
+      "contexts": [
+        "ctx"
+      ],
+      "suggested_fix": null
+    }
+  },
+  "strategies": {
+    "query:fast": {
+      "task_type": "query",
+      "strategy_name": "fast",
+      "uses": 1,
+      "successes": 1,
+      "success_rate": 1.0,
+      "avg_confidence": 0.56,
+      "avg_duration_s": 0.1,
+      "last_used": "2026-05-11T21:07:34.671016"
+    }
+  },
+  "load_history": [
+    {
+      "timestamp": "2026-05-11T21:04:44.048096",
+      "active_modules": 0,
+      "load_level": "minimal",
+      "load_score": 0.0,
+      "working_memory_pressure": 0.0,
+      "recommendation": "MINIMAL load: Idle capacity available for complex tasks."
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.670886",
+      "active_modules": 1,
+      "load_level": "minimal",
+      "load_score": 0.125,
+      "working_memory_pressure": 0.125,
+      "recommendation": "MINIMAL load: Idle capacity available for complex tasks."
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.671902",
+      "active_modules": 0,
+      "load_level": "minimal",
+      "load_score": 0.0,
+      "working_memory_pressure": 0.0,
+      "recommendation": "MINIMAL load: Idle capacity available for complex tasks."
+    },
+    {
+      "timestamp": "2026-05-11T21:07:34.671938",
+      "active_modules": 0,
+      "load_level": "minimal",
+      "load_score": 0.0,
+      "working_memory_pressure": 0.0,
+      "recommendation": "MINIMAL load: Idle capacity available for complex tasks."
+    }
+  ],
+  "fatigue_history": []
+}

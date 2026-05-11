@@ -238,6 +238,34 @@ F.R.I.D.A.Y. implements a layered cognitive architecture inspired by human neuro
 
 ---
 
+### 🧠 Research Foundations
+
+Friday's cognitive architecture is grounded in peer-reviewed research from neuroscience, cognitive science, and AI theory. Each module maps to a specific theoretical foundation:
+
+| # | Research Area | Researcher(s) | Core Idea |
+|---|--------------|---------------|-----------|
+| 1 | **Global Workspace Theory** | Bernard Baars (1988) | Consciousness as a broadcast mechanism — competing processors share a central "stage" |
+| 2 | **Integrated Information Theory** | Giulio Tononi (2004) | Consciousness as Φ — the amount of integrated information a system generates |
+| 3 | **Free Energy Principle** | Karl Friston (2010) | All adaptive systems minimize prediction error through perception and action |
+| 4 | **Dual Process Theory** | Daniel Kahneman (2011) | System 1 (fast/intuitive) vs System 2 (slow/deliberate) reasoning |
+| 5 | **Recognition-Primed Decisions** | Gary Klein (1998) | Experts decide by pattern matching, not deliberation |
+| 6 | **Structure Mapping Theory** | Dedre Gentner (1983) | Analogical reasoning as the core of intelligence — mapping relational structure |
+| 7 | **Causal Hierarchy** | Judea Pearl (2018) | Three levels: Association → Intervention → Counterfactual |
+| 8 | **Somatic Marker Hypothesis** | Antonio Damasio (1994) | Emotions as rapid decision-pruning signals, not obstacles to reason |
+| 9 | **Society of Mind** | Marvin Minsky (1986) | Intelligence as emergent competition between simple agents |
+| 10 | **Metacognition** | John Flavell (1979) | Thinking about thinking — monitoring and regulating cognition |
+| 11 | **Narrative Intelligence** | Roger Schank (1990) | Memory and understanding organized as stories |
+| 12 | **Computational Creativity** | Margaret Boden (2004) | Exploration, combination, and transformation of conceptual spaces |
+| 13 | **Neurosymbolic AI** | Kautz & Marcus (2020+) | Combining neural pattern recognition with symbolic logical reasoning |
+| 14 | **Meta-Learning** | Schmidhuber & Bengio (2016+) | Learning to learn — extracting transferable learning strategies |
+| 15 | **Transfer Learning** | Bransford & Ceci (1999) | Applying knowledge from one domain to structurally similar domains |
+| 16 | **World Models** | Ha & Schmidhuber (2018) | Mental simulation before action — learning in a dreamed environment |
+| 17 | **Consciousness Metrics** | Integrated (GWT + IIT + Metacognition) | Composite consciousness index across integration, self-awareness, and narrative |
+
+> 📖 See [COGNITIVE_RESEARCH.md](COGNITIVE_RESEARCH.md) for the full research-to-implementation deep dive.
+
+---
+
 ## 🧠 Core Brain Systems (34 Modules)
 
 F.R.I.D.A.Y.'s brain lives in `brain/` — 14 interconnected modules totaling **32,800+ lines**.
@@ -439,6 +467,27 @@ F.R.I.D.A.Y.'s brain lives in `brain/` — 14 interconnected modules totaling **
 - Error pattern detection — recurring failure modes to watch for
 - Metacognitive score computation (composite of calibration, success rate, error reduction)
 - Strategy recommendations based on historical success rates
+
+### 35. Intuition Engine (`brain/intuition_engine.py`)
+- **System 1** fast-path reasoning — pattern matching against stored experiences
+- **Recognition-Primed Decision Making** (Klein, 1998) — expert-style rapid decisions
+- Mental simulation of candidate responses via world model before execution
+- Automatic fallback to System 2 deliberate reasoning when simulation fails
+- Pattern library growth — improves with accumulated experience
+
+### 36. Emotional Regulation (`brain/emotional_regulation.py`)
+- **Somatic Marker Hypothesis** (Damasio, 1994) — emotions as decision-pruning signals
+- Emotional valence tagging of decision options from experience history
+- Arousal-valence-dominance (PAD) state tracking for dynamic threshold adjustment
+- Integration with cognitive appraisal (6 dimensions → 14 emotion profiles)
+- Emotional trajectory monitoring over time
+
+### 37. Cognitive Integration (`brain/cognitive_integration.py`)
+- Unified cognitive pipeline wiring all reasoning modules together
+- Routes tasks between System 1 (fast) and System 2 (deliberate) based on complexity
+- Orchestrates metacognitive monitoring, emotional regulation, and intuition
+- Manages handoffs between modules with context preservation
+- Composite consciousness metric computation across all cognitive dimensions
 
 ---
 

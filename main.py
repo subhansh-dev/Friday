@@ -283,6 +283,175 @@ except Exception as e:
     print(f"[FRIDAY] brain.self_modifier: {e}", flush=True)
     get_self_modifier = None
 
+# ── Disconnected cognitive module imports ──────────────────────────────
+_brain_analogy_ok = False
+try:
+    from brain.analogy_engine import get_analogy_engine
+    _brain_analogy_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.analogy_engine: {e}", flush=True)
+    get_analogy_engine = None
+
+_brain_causal_ok = False
+try:
+    from brain.causal_reasoner import get_causal_reasoner
+    _brain_causal_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.causal_reasoner: {e}", flush=True)
+    get_causal_reasoner = None
+
+_brain_creativity_ok = False
+try:
+    from brain.creativity_engine import get_creativity_engine
+    _brain_creativity_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.creativity_engine: {e}", flush=True)
+    get_creativity_engine = None
+
+_brain_meta_learner_ok = False
+try:
+    from brain.meta_learner import get_meta_learner
+    _brain_meta_learner_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.meta_learner: {e}", flush=True)
+    get_meta_learner = None
+
+_brain_module_competition_ok = False
+try:
+    from brain.module_competition import get_module_competition
+    _brain_module_competition_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.module_competition: {e}", flush=True)
+    get_module_competition = None
+
+_brain_neurosymbolic_ok = False
+try:
+    from brain.neurosymbolic_reasoner import get_neurosymbolic_reasoner
+    _brain_neurosymbolic_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.neurosymbolic_reasoner: {e}", flush=True)
+    get_neurosymbolic_reasoner = None
+
+_brain_narrative_ok = False
+try:
+    from brain.narrative_intelligence import get_narrative_intelligence
+    _brain_narrative_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.narrative_intelligence: {e}", flush=True)
+    get_narrative_intelligence = None
+
+_brain_world_model_ok = False
+try:
+    from brain.world_model import get_world_model
+    _brain_world_model_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.world_model: {e}", flush=True)
+    get_world_model = None
+
+_brain_enhanced_wm_ok = False
+try:
+    from brain.enhanced_world_model import get_enhanced_world_model
+    _brain_enhanced_wm_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.enhanced_world_model: {e}", flush=True)
+    get_enhanced_world_model = None
+
+_brain_hierarchical_aif_ok = False
+try:
+    from brain.hierarchical_active_inference import get_hierarchical_aif
+    _brain_hierarchical_aif_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.hierarchical_active_inference: {e}", flush=True)
+    get_hierarchical_aif = None
+
+_brain_integrated_info_ok = False
+try:
+    from brain.integrated_info import get_integrated_info
+    _brain_integrated_info_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.integrated_info: {e}", flush=True)
+    get_integrated_info = None
+
+_brain_transfer_learning_ok = False
+try:
+    from brain.transfer_learning import get_transfer_learning
+    _brain_transfer_learning_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.transfer_learning: {e}", flush=True)
+    get_transfer_learning = None
+
+_brain_self_improve_ok = False
+try:
+    from brain.self_improve_engine import get_self_improve_engine
+    _brain_self_improve_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.self_improve_engine: {e}", flush=True)
+    get_self_improve_engine = None
+
+_brain_findings_bus_ok = False
+try:
+    from brain.findings_bus import get_findings_bus
+    _brain_findings_bus_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.findings_bus: {e}", flush=True)
+    get_findings_bus = None
+
+_brain_model_router_ok = False
+try:
+    from brain.model_router import get_model_router
+    _brain_model_router_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.model_router: {e}", flush=True)
+    get_model_router = None
+
+_brain_intuition_ok = False
+try:
+    from brain.intuition_engine import get_intuition_engine
+    _brain_intuition_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.intuition_engine: {e}", flush=True)
+    get_intuition_engine = None
+
+_brain_metacognitive_ok = False
+try:
+    from brain.metacognitive_monitor import get_metacognitive_monitor
+    _brain_metacognitive_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.metacognitive_monitor: {e}", flush=True)
+    get_metacognitive_monitor = None
+
+_brain_emotional_regulation_ok = False
+try:
+    from brain.emotional_regulation import get_emotional_regulation
+    _brain_emotional_regulation_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.emotional_regulation: {e}", flush=True)
+    get_emotional_regulation = None
+
+_brain_cognitive_integration_ok = False
+try:
+    from brain.cognitive_integration import get_cognitive_integration
+    _brain_cognitive_integration_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.cognitive_integration: {e}", flush=True)
+    get_cognitive_integration = None
+
+_brain_cognitive_appraisal_ok = False
+try:
+    from brain.cognitive_appraisal import get_cognitive_appraisal
+    _brain_cognitive_appraisal_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.cognitive_appraisal: {e}", flush=True)
+    get_cognitive_appraisal = None
+
+_brain_cognitive_load_ok = False
+try:
+    from brain.cognitive_load import get_cognitive_load_manager
+    _brain_cognitive_load_ok = True
+except Exception as e:
+    print(f"[FRIDAY] brain.cognitive_load: {e}", flush=True)
+    get_cognitive_load_manager = None
+
 _verification_ok = False
 try:
     from actions.verification import (
@@ -1397,6 +1566,129 @@ TOOL_DECLARATIONS = [
             "required": ["action"]
         }
     },
+    {
+        "name": "cognitive_reason",
+        "description": "General cognitive reasoning using all available brain modules (analogy, causal, creativity, meta-learning, narrative, neurosymbolic, world model). Orchestrates multiple cognitive modules to reason about a query. Use for complex reasoning tasks that benefit from multiple perspectives.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "query": {"type": "STRING", "description": "The question or problem to reason about"},
+                "depth": {"type": "STRING", "description": "Processing depth: quick | normal | deep (default: normal)"},
+                "context": {"type": "STRING", "description": "Additional context for the reasoning task"}
+            },
+            "required": ["query"]
+        }
+    },
+    {
+        "name": "analogy_reason",
+        "description": "Find and apply analogies between domains. Uses Gentner's Structure Mapping to find structural similarities between a source and target domain. Use when explaining complex concepts through analogy or finding parallels.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "source_domain": {"type": "STRING", "description": "The domain to draw analogy from"},
+                "target_domain": {"type": "STRING", "description": "The domain to apply analogy to"},
+                "query": {"type": "STRING", "description": "Specific question or concept to reason about via analogy"}
+            },
+            "required": ["query"]
+        }
+    },
+    {
+        "name": "causal_analyze",
+        "description": "Causal analysis using Pearl's Causal Hierarchy. Analyzes cause-effect relationships, counterfactuals, and interventional reasoning. Use when understanding WHY something happened or what would happen if conditions changed.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "events": {"type": "STRING", "description": "Description of events or situation to analyze causally"},
+                "question": {"type": "STRING", "description": "Specific causal question (e.g. 'what caused X?', 'what if Y had not happened?')"}
+            },
+            "required": ["events"]
+        }
+    },
+    {
+        "name": "creative_solve",
+        "description": "Generate creative solutions using computational creativity engine. Combines conceptual blending, constraint relaxation, and bisociation to produce novel ideas. Use when brainstorming, solving hard problems, or needing unconventional approaches.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "problem": {"type": "STRING", "description": "The problem to solve creatively"},
+                "constraints": {"type": "STRING", "description": "Constraints or requirements to respect"},
+                "num_ideas": {"type": "INTEGER", "description": "Number of ideas to generate (default: 5, max: 10)"}
+            },
+            "required": ["problem"]
+        }
+    },
+    {
+        "name": "meta_reflect",
+        "description": "Meta-cognitive reflection — think about thinking. Examines learning strategies, cognitive patterns, and calibration. Use for self-improvement, learning optimization, or understanding cognitive patterns.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "action": {"type": "STRING", "description": "load | strategies | patterns | calibrate"}
+            },
+            "required": ["action"]
+        }
+    },
+    {
+        "name": "consciousness_check",
+        "description": "Check integrated information (IIT-inspired) consciousness metrics. Measures phi (integration), differentiation, consciousness level, and module connectivity. Use for deep introspection on system integration quality.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "action": {"type": "STRING", "description": "phi | level | connectivity | report (default: report)"}
+            },
+            "required": []
+        }
+    },
+    {
+        "name": "intuition_check",
+        "description": "Fast pattern matching and recognition-primed decision making (Kahneman System 1 / Klein RPD). Matches current situation to past experience for rapid intuitive assessment. Use for quick gut-check decisions or when time pressure demands fast answers.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "situation": {"type": "STRING", "description": "The situation or problem to assess intuitively"},
+                "domain": {"type": "STRING", "description": "Optional domain context (e.g. 'code', 'security', 'communication')"}
+            },
+            "required": ["situation"]
+        }
+    },
+    {
+        "name": "emotional_state",
+        "description": "Emotional regulation engine based on Damasio's Somatic Marker Hypothesis. Uses emotions to modulate decision-making, applies affect heuristics, and provides mood-congruent processing. Use when emotional context matters for a decision.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "action": {"type": "STRING", "description": "status | somatic_markers | reappraise | regulate"},
+                "situation": {"type": "STRING", "description": "Situation to apply emotional reasoning to (for somatic_markers/reappraise)"},
+                "emotion": {"type": "STRING", "description": "Current emotion to regulate (for regulate action)"}
+            },
+            "required": ["action"]
+        }
+    },
+    {
+        "name": "appraise_event",
+        "description": "Cognitive appraisal — evaluate an event for personal significance using Lazarus' theory. Determines emotional response and coping strategy based on goal relevance, coping potential, and future expectancy.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "event": {"type": "STRING", "description": "The event or situation to appraise"},
+                "context": {"type": "STRING", "description": "Additional context (sentiment, user state)"},
+                "goals": {"type": "STRING", "description": "Active goals to check relevance against (comma-separated)"}
+            },
+            "required": ["event"]
+        }
+    },
+    {
+        "name": "cognitive_load_check",
+        "description": "Check cognitive load and working memory status. Estimates task complexity, tracks active modules, detects overload, and suggests load-shedding strategies. Use before complex tasks or when responses seem degraded.",
+        "parameters": {
+            "type": "OBJECT",
+            "properties": {
+                "action": {"type": "STRING", "description": "estimate | status | overload | memory | clear_memory"},
+                "task": {"type": "STRING", "description": "Task to estimate complexity for (for estimate action)"}
+            },
+            "required": ["action"]
+        }
+    },
 ]
 
 
@@ -1551,6 +1843,112 @@ class FridayLive:
             self._agi_orchestrator = get_agi_orchestrator() if get_agi_orchestrator else None
         except Exception:
             self._agi_orchestrator = None
+
+        # ── Initialize disconnected cognitive modules ───────────────────
+        try:
+            self._analogy_engine = get_analogy_engine() if get_analogy_engine else None
+        except Exception:
+            self._analogy_engine = None
+
+        try:
+            self._causal_reasoner = get_causal_reasoner() if get_causal_reasoner else None
+        except Exception:
+            self._causal_reasoner = None
+
+        try:
+            self._creativity_engine = get_creativity_engine() if get_creativity_engine else None
+        except Exception:
+            self._creativity_engine = None
+
+        try:
+            self._meta_learner = get_meta_learner() if get_meta_learner else None
+        except Exception:
+            self._meta_learner = None
+
+        try:
+            self._module_competition = get_module_competition() if get_module_competition else None
+        except Exception:
+            self._module_competition = None
+
+        try:
+            self._neurosymbolic_reasoner = get_neurosymbolic_reasoner() if get_neurosymbolic_reasoner else None
+        except Exception:
+            self._neurosymbolic_reasoner = None
+
+        try:
+            self._narrative_intelligence = get_narrative_intelligence() if get_narrative_intelligence else None
+        except Exception:
+            self._narrative_intelligence = None
+
+        try:
+            self._world_model = get_world_model() if get_world_model else None
+        except Exception:
+            self._world_model = None
+
+        try:
+            self._enhanced_wm = get_enhanced_world_model() if get_enhanced_world_model else None
+        except Exception:
+            self._enhanced_wm = None
+
+        try:
+            self._hierarchical_aif = get_hierarchical_aif() if get_hierarchical_aif else None
+        except Exception:
+            self._hierarchical_aif = None
+
+        try:
+            self._integrated_info = get_integrated_info() if get_integrated_info else None
+        except Exception:
+            self._integrated_info = None
+
+        try:
+            self._transfer_learning = get_transfer_learning() if get_transfer_learning else None
+        except Exception:
+            self._transfer_learning = None
+
+        try:
+            self._self_improve_engine = get_self_improve_engine() if get_self_improve_engine else None
+        except Exception:
+            self._self_improve_engine = None
+
+        try:
+            self._findings_bus = get_findings_bus() if get_findings_bus else None
+        except Exception:
+            self._findings_bus = None
+
+        try:
+            self._model_router = get_model_router() if get_model_router else None
+        except Exception:
+            self._model_router = None
+
+        try:
+            self._intuition_engine = get_intuition_engine() if get_intuition_engine else None
+        except Exception:
+            self._intuition_engine = None
+
+        try:
+            self._metacognitive_monitor = get_metacognitive_monitor() if get_metacognitive_monitor else None
+        except Exception:
+            self._metacognitive_monitor = None
+
+        try:
+            self._emotional_regulation = get_emotional_regulation() if get_emotional_regulation else None
+        except Exception:
+            self._emotional_regulation = None
+
+        try:
+            self._cognitive_integration = get_cognitive_integration() if get_cognitive_integration else None
+        except Exception:
+            self._cognitive_integration = None
+
+        try:
+            self._cognitive_appraisal = get_cognitive_appraisal() if get_cognitive_appraisal else None
+        except Exception:
+            self._cognitive_appraisal = None
+
+        try:
+            self._cognitive_load = get_cognitive_load_manager() if get_cognitive_load_manager else None
+        except Exception:
+            self._cognitive_load = None
 
         try:
             self._self_awareness = get_self_awareness() if get_self_awareness else _NullModule()
@@ -2748,6 +3146,450 @@ class FridayLive:
 
         except Exception as e:
             return f"AGI status error: {e}"
+
+    @register_tool("cognitive_reason")
+    async def _tool_cognitive_reason(self, args):
+        """Handle cognitive_reason tool — multi-module cognitive reasoning."""
+        if not self._agi_orchestrator:
+            return "AGI orchestrator not available."
+        query = args.get("query", "")
+        if not query:
+            return "Please provide a query to reason about."
+        depth = args.get("depth", "normal")
+        context = args.get("context", "")
+        try:
+            result = self._agi_orchestrator.process_cognitive_request(
+                request=query, context=context, depth=depth
+            )
+            lines = [f"Cognitive reasoning ({depth} depth):"]
+            lines.append(f"  Modules used: {', '.join(result.get('modules_used', []))}")
+            lines.append(f"  Elapsed: {result.get('elapsed_seconds', 0):.2f}s")
+            # Show key results
+            for key, val in result.items():
+                if key.startswith("result_") and isinstance(val, dict):
+                    mod_name = key.replace("result_", "")
+                    summary_items = list(val.items())[:3]
+                    if summary_items:
+                        summary = "; ".join(f"{k}={str(v)[:50]}" for k, v in summary_items)
+                        lines.append(f"  [{mod_name}] {summary}")
+            trace = result.get("trace", [])
+            if trace:
+                lines.append(f"  Trace: {' → '.join(trace[:5])}")
+            return "\n".join(lines)
+        except Exception as e:
+            return f"Cognitive reasoning error: {e}"
+
+    @register_tool("analogy_reason")
+    async def _tool_analogy_reason(self, args):
+        """Handle analogy_reason tool — structural analogy finding."""
+        if not self._analogy_engine:
+            return "Analogy engine not available."
+        query = args.get("query", "")
+        if not query:
+            return "Please provide a query for analogy reasoning."
+        source_domain = args.get("source_domain", "")
+        target_domain = args.get("target_domain", "")
+        try:
+            engine = self._analogy_engine
+            # Extract relational structure from the query
+            if hasattr(engine, "extract_relational_structure"):
+                structure = engine.extract_relational_structure(query)
+                lines = [f"Analogy reasoning for: {query[:80]}"]
+                if structure and hasattr(structure, "to_dict"):
+                    s_dict = structure.to_dict()
+                    objects = s_dict.get("objects", [])
+                    relations = s_dict.get("relations", {})
+                    lines.append(f"  Objects: {', '.join(objects[:8])}")
+                    lines.append(f"  Relations: {len(relations)}")
+                # Try to find analogies from cached domains
+                if hasattr(engine, "_domain_cache"):
+                    cache = engine._domain_cache
+                    if cache:
+                        targets = list(cache.values())[:10]
+                        if targets and structure and not structure.is_empty():
+                            from brain.analogy_engine import RelationalStructure
+                            analogies = engine.find_analogy(structure, targets, top_k=3)
+                            if analogies:
+                                lines.append("  Analogies found:")
+                                for m in analogies:
+                                    lines.append(
+                                        f"    → {m.target_domain} "
+                                        f"(score: {m.total_score:.2f})"
+                                    )
+                                # Transfer inferences
+                                best = analogies[0]
+                                if hasattr(engine, "transfer_inference"):
+                                    inferences = engine.transfer_inference(best)
+                                    if inferences:
+                                        lines.append(f"  Inferences: {len(inferences)} transfers")
+                if source_domain and target_domain:
+                    lines.append(f"  Source: {source_domain} → Target: {target_domain}")
+                # Stats
+                if hasattr(engine, "get_stats"):
+                    stats = engine.get_stats()
+                    lines.append(
+                        f"  Engine: {stats.get('total_domains', 0)} domains, "
+                        f"{stats.get('total_mappings', 0)} mappings"
+                    )
+                return "\n".join(lines)
+            return "Analogy engine cannot extract relational structures."
+        except Exception as e:
+            return f"Analogy reasoning error: {e}"
+
+    @register_tool("causal_analyze")
+    async def _tool_causal_analyze(self, args):
+        """Handle causal_analyze tool — Pearl causal hierarchy analysis."""
+        if not self._causal_reasoner:
+            return "Causal reasoner not available."
+        events = args.get("events", "")
+        if not events:
+            return "Please provide events to analyze."
+        question = args.get("question", "")
+        try:
+            reasoner = self._causal_reasoner
+            lines = [f"Causal analysis:"]
+            # Find causes
+            if hasattr(reasoner, "find_causes"):
+                query_text = question if question else events[:200]
+                causes = reasoner.find_causes(query_text, max_depth=3)
+                if causes:
+                    lines.append(f"  Causes found: {len(causes)}")
+                    for c in causes[:5]:
+                        cause_name = c.get("cause", str(c))[:60]
+                        strength = c.get("strength", "?")
+                        lines.append(f"    → {cause_name} (strength: {strength})")
+                else:
+                    lines.append("  No causal relationships found yet.")
+            # Explain causal chain
+            if question and hasattr(reasoner, "explain_causal_chain"):
+                # Try to extract cause/effect from question
+                chain = reasoner.explain_causal_chain(events[:100], question[:100])
+                if chain:
+                    lines.append(f"  Causal chain: {chain[:200]}")
+            # Counterfactual
+            if question and "what if" in question.lower() and hasattr(reasoner, "counterfactual"):
+                cf = reasoner.counterfactual(
+                    {"description": events[:200]},
+                    {"description": question[:200]}
+                )
+                if cf:
+                    lines.append(f"  Counterfactual: {str(cf)[:200]}")
+            # Stats
+            if hasattr(reasoner, "get_stats"):
+                stats = reasoner.get_stats()
+                lines.append(
+                    f"  Graph: {stats.get('total_nodes', 0)} nodes, "
+                    f"{stats.get('total_edges', 0)} edges"
+                )
+            return "\n".join(lines)
+        except Exception as e:
+            return f"Causal analysis error: {e}"
+
+    @register_tool("creative_solve")
+    async def _tool_creative_solve(self, args):
+        """Handle creative_solve tool — computational creativity."""
+        if not self._creativity_engine:
+            return "Creativity engine not available."
+        problem = args.get("problem", "")
+        if not problem:
+            return "Please describe the problem to solve."
+        constraints = args.get("constraints", "")
+        num_ideas = min(int(args.get("num_ideas", 5)), 10)
+        try:
+            engine = self._creativity_engine
+            lines = [f"Creative solutions for: {problem[:80]}"]
+            # Generate alternatives
+            if hasattr(engine, "generate_alternatives"):
+                problem_desc = {"description": problem[:300], "domain": "general"}
+                if constraints:
+                    problem_desc["constraints"] = constraints[:200]
+                ideas = engine.generate_alternatives(
+                    problem=problem_desc,
+                    existing_solution={"method": "standard", "steps": []},
+                    n=num_ideas,
+                )
+                if ideas:
+                    lines.append(f"  Generated {len(ideas)} ideas:")
+                    for i, idea in enumerate(ideas[:num_ideas], 1):
+                        if isinstance(idea, dict):
+                            desc = idea.get("description", str(idea))[:100]
+                            novelty = idea.get("novelty_score", "?")
+                            lines.append(f"    {i}. {desc} (novelty: {novelty})")
+                        else:
+                            lines.append(f"    {i}. {str(idea)[:100]}")
+                else:
+                    lines.append("  No ideas generated.")
+            # Creative dream for deeper inspiration
+            if hasattr(engine, "creative_dream"):
+                dreams = engine.creative_dream()
+                if dreams:
+                    lines.append(f"  Creative inspirations: {len(dreams)} dream fragments")
+            # Stats
+            if hasattr(engine, "get_stats"):
+                stats = engine.get_stats()
+                lines.append(
+                    f"  Engine: {stats.get('total_ideas', 0)} ideas in journal, "
+                    f"{stats.get('total_blends', 0)} blends"
+                )
+            return "\n".join(lines)
+        except Exception as e:
+            return f"Creative solving error: {e}"
+
+    @register_tool("meta_reflect")
+    async def _tool_meta_reflect(self, args):
+        """Handle meta_reflect tool — meta-cognitive reflection."""
+        if not self._meta_learner:
+            return "Meta-learner not available."
+        action = args.get("action", "strategies")
+        try:
+            ml = self._meta_learner
+            if action == "load":
+                if hasattr(ml, "get_all_domains"):
+                    domains = ml.get_all_domains()
+                    return f"Meta-learner tracking {len(domains)} domains: {', '.join(domains[:10])}"
+                return "Meta-learner loaded."
+
+            elif action == "strategies":
+                if hasattr(ml, "get_strategy_report"):
+                    report = ml.get_strategy_report("general")
+                    lines = ["Strategy report:"]
+                    for k, v in list(report.items())[:8]:
+                        lines.append(f"  {k}: {str(v)[:80]}")
+                    return "\n".join(lines)
+                return "Strategy data not available."
+
+            elif action == "patterns":
+                if hasattr(ml, "get_all_domains"):
+                    domains = ml.get_all_domains()
+                    lines = [f"Cognitive patterns ({len(domains)} domains):"]
+                    for domain in domains[:10]:
+                        if hasattr(ml, "get_accuracy_trend"):
+                            trend = ml.get_accuracy_trend(domain)
+                            if trend:
+                                acc = trend.get("recent_accuracy", "?")
+                                lr = trend.get("learning_rate", "?")
+                                lines.append(f"  {domain}: accuracy={acc}, lr={lr}")
+                    return "\n".join(lines)
+                return "Pattern data not available."
+
+            elif action == "calibrate":
+                if hasattr(ml, "get_exploration_rate"):
+                    exploration = ml.get_exploration_rate("general")
+                    return f"Calibration: exploration rate = {exploration:.3f}"
+                return "Calibration data not available."
+
+            return f"Unknown meta_reflect action: {action}"
+        except Exception as e:
+            return f"Meta-reflection error: {e}"
+
+    @register_tool("consciousness_check")
+    async def _tool_consciousness_check(self, args):
+        """Handle consciousness_check tool — IIT consciousness metrics."""
+        if not self._integrated_info:
+            return "Integrated information module not available."
+        action = args.get("action", "report")
+        try:
+            ii = self._integrated_info
+            if action == "phi":
+                if hasattr(ii, "update"):
+                    result = ii.update()
+                    phi = result.get("phi", 0)
+                    return f"Φ (phi) = {phi:.4f}"
+                return "Phi computation not available."
+
+            elif action == "level":
+                if hasattr(ii, "get_consciousness_for_orchestrator"):
+                    data = ii.get_consciousness_for_orchestrator()
+                    state = data.get("consciousness_state", "unknown")
+                    score = data.get("consciousness_score", 0)
+                    return f"Consciousness: {state} (score={score:.4f})"
+                return "Consciousness level not available."
+
+            elif action == "connectivity":
+                if hasattr(ii, "get_stats"):
+                    stats = ii.get_stats()
+                    conn = stats.get("connectivity", {})
+                    return (
+                        f"Module connectivity:\n"
+                        f"  Modules: {conn.get('total_modules', 0)}\n"
+                        f"  Connections: {conn.get('total_connections', 0)}\n"
+                        f"  Isolated: {', '.join(conn.get('isolated_modules', [])) or 'none'}"
+                    )
+                return "Connectivity data not available."
+
+            else:  # report
+                if hasattr(ii, "format_for_prompt"):
+                    return ii.format_for_prompt(max_chars=800)
+                if hasattr(ii, "get_consciousness_for_orchestrator"):
+                    data = ii.get_consciousness_for_orchestrator()
+                    lines = ["Consciousness Report:"]
+                    for k, v in data.items():
+                        lines.append(f"  {k}: {v}")
+                    return "\n".join(lines)
+                return "Consciousness report not available."
+
+        except Exception as e:
+            return f"Consciousness check error: {e}"
+
+    @register_tool("intuition_check")
+    async def _tool_intuition_check(self, args):
+        """Handle intuition_check tool — System 1 / RPD pattern matching."""
+        if not self._intuition_engine:
+            return "Intuition engine not available."
+        situation = args.get("situation", "")
+        domain = args.get("domain", "")
+        try:
+            ie = self._intuition_engine
+            result = ie.recognize(situation, domain=domain if domain else None)
+            if result:
+                action, confidence, pattern = result
+                should_deliberate = ie.should_deliberate(situation) if hasattr(ie, "should_deliberate") else False
+                lines = [
+                    f"Intuition: {action}",
+                    f"Confidence: {confidence:.2f}",
+                    f"Matched pattern: {pattern}",
+                ]
+                if should_deliberate:
+                    lines.append("⚠️ Low confidence — recommend deliberative reasoning (System 2)")
+                else:
+                    lines.append("✅ High confidence — intuitive response sufficient")
+                return "\n".join(lines)
+            return "No matching pattern found. This is a novel situation — recommend System 2 reasoning."
+        except Exception as e:
+            return f"Intuition check error: {e}"
+
+    @register_tool("emotional_state")
+    async def _tool_emotional_state(self, args):
+        """Handle emotional_state tool — Damasio's Somatic Marker Hypothesis."""
+        if not self._emotional_regulation:
+            return "Emotional regulation module not available."
+        action = args.get("action", "status")
+        try:
+            er = self._emotional_regulation
+            if action == "status":
+                if hasattr(er, "get_status"):
+                    status = er.get_status()
+                    lines = ["Emotional Regulation Status:"]
+                    for k, v in status.items():
+                        lines.append(f"  {k}: {v}")
+                    return "\n".join(lines)
+                return "Emotional regulation loaded."
+
+            elif action == "somatic_markers":
+                situation = args.get("situation", "")
+                if hasattr(er, "apply_somatic_markers"):
+                    result = er.apply_somatic_markers([situation])
+                    if result:
+                        lines = ["Somatic markers applied:"]
+                        for item in result[:5]:
+                            lines.append(f"  {item}")
+                        return "\n".join(lines)
+                return "Somatic marker analysis not available."
+
+            elif action == "reappraise":
+                situation = args.get("situation", "")
+                if hasattr(er, "reappraise"):
+                    frame = er.reappraise(situation)
+                    return f"Reappraisal: {frame}"
+                return "Reappraisal not available."
+
+            elif action == "regulate":
+                emotion = args.get("emotion", "")
+                situation = args.get("situation", "")
+                if hasattr(er, "regulate_cognitive_state"):
+                    strategy = er.regulate_cognitive_state(emotion, situation)
+                    return f"Regulation strategy: {strategy}"
+                return "Regulation not available."
+
+            return f"Unknown emotional_state action: {action}"
+        except Exception as e:
+            return f"Emotional state error: {e}"
+
+    @register_tool("appraise_event")
+    async def _tool_appraise_event(self, args):
+        """Handle appraise_event tool — Lazarus cognitive appraisal."""
+        if not self._cognitive_appraisal:
+            return "Cognitive appraisal module not available."
+        event = args.get("event", "")
+        context_str = args.get("context", "")
+        goals_str = args.get("goals", "")
+        try:
+            ca = self._cognitive_appraisal
+            context = {}
+            if context_str:
+                context["description"] = context_str
+            goals = [g.strip() for g in goals_str.split(",") if g.strip()] if goals_str else None
+            result = ca.appraise(event, context=context, goals=goals)
+            lines = [
+                f"Appraisal Result:",
+                f"  Emotion: {result.emotion} (intensity: {result.intensity:.2f})",
+                f"  Goal relevance: {result.primary['goal_relevance']:.2f}",
+                f"  Goal congruence: {result.primary['goal_congruence']:.2f}",
+                f"  Coping potential: {result.secondary['coping_potential']:.2f}",
+                f"  Coping strategy: {result.coping_strategy}",
+            ]
+            return "\n".join(lines)
+        except Exception as e:
+            return f"Appraisal error: {e}"
+
+    @register_tool("cognitive_load_check")
+    async def _tool_cognitive_load_check(self, args):
+        """Handle cognitive_load_check tool — Sweller's Cognitive Load Theory."""
+        if not self._cognitive_load:
+            return "Cognitive load module not available."
+        action = args.get("action", "status")
+        try:
+            cl = self._cognitive_load
+            if action == "estimate":
+                task = args.get("task", "")
+                result = cl.estimate_task_complexity(task)
+                lines = [
+                    f"Task complexity estimate:",
+                    f"  Intrinsic load: {result['intrinsic_load']:.2f}",
+                    f"  Total estimated: {result['estimated_total']:.2f}",
+                    f"  Recommended path: {result['recommended_path']}",
+                    f"  Recommended modules: {', '.join(result['recommended_modules'][:5])}",
+                ]
+                if result.get("warnings"):
+                    lines.append(f"  ⚠️ {result['warnings'][0]}")
+                return "\n".join(lines)
+
+            elif action == "status":
+                status = cl.get_active_load()
+                lines = [
+                    f"Cognitive Load Status:",
+                    f"  Active modules: {len(status['active_modules'])}",
+                    f"  Total load: {status['total_load']:.2f}",
+                    f"  Working memory: {status['working_memory_used']}/{status['working_memory_capacity']}",
+                    f"  Load level: {status['load_level']}",
+                ]
+                return "\n".join(lines)
+
+            elif action == "overload":
+                result = cl.check_overload()
+                if result["overloaded"]:
+                    lines = [f"⚠️ OVERLOAD DETECTED (level: {result['load_level']})"]
+                    for s in result["shedding_suggestions"][:3]:
+                        lines.append(f"  → {s}")
+                    return "\n".join(lines)
+                return f"System OK. Load level: {result['load_level']}"
+
+            elif action == "memory":
+                contents = cl.get_working_memory_contents()
+                if not contents:
+                    return "Working memory is empty."
+                lines = [f"Working Memory ({len(contents)} chunks):"]
+                for chunk in contents:
+                    lines.append(f"  [{chunk['source']}] {chunk['content']}")
+                return "\n".join(lines)
+
+            elif action == "clear_memory":
+                count = cl.clear_working_memory()
+                return f"Cleared {count} chunks from working memory."
+
+            return f"Unknown cognitive_load_check action: {action}"
+        except Exception as e:
+            return f"Cognitive load error: {e}"
 
     # ── Registered tool handlers ──────────────────────────────────────
     @register_tool("open_app")

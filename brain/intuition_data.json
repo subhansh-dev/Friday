@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "version": 1,
+    "created": "2026-05-11T21:04:44.043717",
+    "last_update": "2026-05-11T21:07:34.670436",
+    "total_recognitions": 3,
+    "total_confident_fast_paths": 1,
+    "total_escalations": 0
+  },
+  "patterns": {
+    "test": [
+      {
+        "pattern_id": "d43c68ff6917",
+        "domain": "test",
+        "situation_signature": [
+          0.04,
+          0.4,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9752,
+          0.05,
+          0.1111111111111111,
+          0.447
+        ],
+        "situation_text": "test situation about coding",
+        "action": "write code",
+        "outcome": null,
+        "strength": 0.5,
+        "success_count": 0,
+        "failure_count": 0,
+        "created_at": "2026-05-11T21:07:34.669438",
+        "last_used_at": "2026-05-11T21:07:34.669675",
+        "last_outcome_at": null
+      },
+      {
+        "pattern_id": "9712a1707ef6",
+        "domain": "test",
+        "situation_signature": [
+          0.02,
+          0.23333333333333334,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0896,
+          0.05,
+          0.125,
+          0.447
+        ],
+        "situation_text": "test sit",
+        "action": "act",
+        "outcome": "ok",
+        "strength": 0.65,
+        "success_count": 1,
+        "failure_count": 0,
+        "created_at": "2026-05-11T21:07:34.669789",
+        "last_used_at": "2026-05-11T21:07:34.669790",
+        "last_outcome_at": "2026-05-11T21:07:34.670407"
+      }
+    ]
+  },
+  "domain_stats": {
+    "test": {
+      "pattern_count": 2,
+      "success_count": 1,
+      "failure_count": 0,
+      "accuracy": 1.0,
+      "avg_strength": 0.575,
+      "expertise_level": "beginner",
+      "last_update": "2026-05-11T21:07:34.670419"
+    }
+  },
+  "recent_matches": [
+    {
+      "pattern_id": "d43c68ff6917",
+      "domain": "test",
+      "similarity": 0.85,
+      "confidence": 0.775,
+      "action": "write code",
+      "strength": 0.5,
+      "elapsed_ms": 0.02,
+      "timestamp": "2026-05-11T21:07:34.669679"
+    }
+  ]
+}
