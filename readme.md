@@ -18,7 +18,7 @@
     <img src="https://img.shields.io/github/license/subhansh-dev/Friday" alt="License" />
   </a>
   <a href="https://python.org/versions/3.11">
-    <img src="https://img.shields.io/badge/Python-3.11%2B-blue" alt="Python" />
+    <img src="https://img.shields.io/badge/Python-3.11--3.12-blue" alt="Python" />
   </a>
 </p>
 
@@ -1048,7 +1048,7 @@ friday/
 | Layer | Technology |
 |-------|-----------|
 | **AI Models** | Gemini 2.5 Flash (Live API), Anthropic Claude |
-| **Language** | Python 3.11+ |
+| **Language** | Python 3.11 – 3.12 (3.13+ not supported — MediaPipe has no wheels) |
 | **Voice** | Gemini Live API, sounddevice |
 | **Vision** | MediaPipe (hands, face), OpenCV |
 | **ML** | TensorFlow (LSTM gesture model) |
@@ -1104,7 +1104,7 @@ Send a message to your bot on Telegram and FRIDAY will respond. You can also tel
 
 ### Prerequisites
 
-- Python 3.11+
+- Python 3.11 – 3.12 (MediaPipe has no wheels for 3.13+, gestures won't work)
 - Git
 - Windows (primary), Linux (partial), macOS (partial)
 
