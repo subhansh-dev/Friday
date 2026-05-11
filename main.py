@@ -643,10 +643,21 @@ try:
 except ImportError:
     _holo_available = False
 
+# ── Cyber features gated behind config flag (disabled by default) ──
+_cyber_enabled = False
 try:
-    from actions.security_tools import security_tools
-    _security_tools_available = True
-except ImportError:
+    _cfg_data = json.loads((BASE_DIR / "config" / "api_keys.json").read_text(encoding="utf-8"))
+    _cyber_enabled = bool(_cfg_data.get("cyber_enabled", False))
+except Exception:
+    pass
+
+if _cyber_enabled:
+    try:
+        from actions.security_tools import security_tools
+        _security_tools_available = True
+    except ImportError:
+        _security_tools_available = False
+else:
     _security_tools_available = False
 
 try:
@@ -4590,6 +4601,8 @@ class FridayLive:
     @register_tool("security_tools")
     async def _tool_security(self, args):
         if not _security_tools_available:
+            if not _cyber_enabled:
+                return "Cyber features are disabled. Set \"cyber_enabled\": true in config/api_keys.json to enable."
             return "Security tools module not installed."
         # v10.6 — streaming: player is passed through for real-time output
         r = await self._run_long_tool_with_timeout(

@@ -771,6 +771,8 @@ F.R.I.D.A.Y. includes an **optional multi-layered security architecture** with 3
 
 > **Note:** This is one of many capabilities — Friday's core purpose is general-purpose autonomous cognition (research, creativity, document analysis, coding, system control). Security features are opt-in and require explicit user confirmation before active operations.
 
+> **⚠️ Cyber features are DISABLED by default.** To enable, set `"cyber_enabled": true` in `config/api_keys.json`. Without this flag, the security toolkit will not load and cannot be used. **Enable at your own risk.** The creator (Subhansh) is not responsible for any misuse, damage, or legal consequences resulting from the use of these features. By enabling cyber features, you accept full responsibility for how they are used.
+
 ### Architecture
 
 ```
