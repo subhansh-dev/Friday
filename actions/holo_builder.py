@@ -547,6 +547,11 @@ class GestureController:
 
         if not HAS_MEDIAPIPE:
             print("[HOLO] MediaPipe not installed — gestures disabled")
+            print("[HOLO] Install with: pip install mediapipe")
+            return
+        if not Path(_HAND_MODEL).exists():
+            print(f"[HOLO] Hand model not found: {_HAND_MODEL}")
+            print("[HOLO] Download hand_landmarker.task to brain/ folder")
             return
         try:
             opts = HandLandmarkerOptions(
@@ -561,7 +566,16 @@ class GestureController:
             self.enabled = True
             print(f"[HOLO] Gesture controller ready ({num_hands}-hand mode)")
         except Exception as e:
-            print(f"[HOLO] Gestures unavailable: {e}")
+            err_str = str(e)
+            if "WinError 193" in err_str or "not a valid Win32" in err_str:
+                print(f"[HOLO] Gestures unavailable: MediaPipe native DLL failed to load")
+                print(f"[HOLO] This is a known MediaPipe issue on some Python/Windows combos.")
+                print(f"[HOLO] Fix options:")
+                print(f"[HOLO]   1. Reinstall MediaPipe: pip uninstall mediapipe && pip install mediapipe")
+                print(f"[HOLO]   2. If that fails, downgrade Python to 3.12 (won't affect Friday)")
+                print(f"[HOLO]   3. Or try: pip install mediapipe==0.10.18 (last stable for your setup)")
+            else:
+                print(f"[HOLO] Gestures unavailable: {e}")
 
     @staticmethod
     def _palm_size(lm):
@@ -2066,6 +2080,8 @@ class HoloRenderer:
         self._draw_top_left_panel(c, t)
         self._draw_top_right_panel(c, t)
         self._draw_bottom_bar(c, t)
+        if not self.ar_mode:
+            self._draw_ar_prompt(c, t)
 
         glMatrixMode(GL_PROJECTION)
         glPopMatrix()
@@ -2267,6 +2283,38 @@ class HoloRenderer:
 
         mode = (self.input.draw_mode if self.input else "tube").upper()
         self._draw_text_2d(self.width - 160, by, f"DRAW: {mode}", c, 0.5)
+
+    def _draw_ar_prompt(self, c, t):
+        """Draw 'TAB to switch to AR mode' prompt centered on screen."""
+        prompt = "TAB to switch to AR mode"
+        char_w = 8
+        text_w = len(prompt) * char_w
+        px = (self.width - text_w) // 2
+        py = self.height // 2 + 80
+
+        # Pulsing background box
+        pulse = 0.5 + 0.2 * math.sin(t * 2)
+        box_pad = 16
+        glColor4f(0.0, 0.05, 0.1, 0.25 * pulse)
+        glBegin(GL_QUADS)
+        glVertex2f(px - box_pad, py - box_pad)
+        glVertex2f(px + text_w + box_pad, py - box_pad)
+        glVertex2f(px + text_w + box_pad, py + 20 + box_pad)
+        glVertex2f(px - box_pad, py + 20 + box_pad)
+        glEnd()
+
+        # Border
+        glColor4f(c[0], c[1], c[2], 0.3 * pulse)
+        glLineWidth(1.0)
+        glBegin(GL_LINE_LOOP)
+        glVertex2f(px - box_pad, py - box_pad)
+        glVertex2f(px + text_w + box_pad, py - box_pad)
+        glVertex2f(px + text_w + box_pad, py + 20 + box_pad)
+        glVertex2f(px - box_pad, py + 20 + box_pad)
+        glEnd()
+
+        # Text
+        self._draw_text_2d(px, py + 2, prompt, c, 0.5 * pulse)
 
     def _draw_text_2d(self, x, y, text, color, alpha=0.6, scale=1.0):
         char_w = 8 * scale
