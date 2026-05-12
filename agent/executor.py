@@ -166,6 +166,7 @@ def _run_generated_code(
         result = subprocess.run(
             [sys.executable, tmp_path],
             capture_output=True, text=True,
+            encoding="utf-8",
             timeout=timeout,
             cwd=str(home),
         )

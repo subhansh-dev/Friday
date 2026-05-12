@@ -602,7 +602,7 @@ def _run_native(cmd: str, timeout: int = 120) -> str:
     try:
         r = subprocess.run(
             ["bash", "-c", cmd],
-            capture_output=True, text=True, timeout=timeout,
+            capture_output=True, text=True, encoding="utf-8", timeout=timeout,
             encoding='utf-8', errors='replace',
         )
         out = (r.stdout or "").strip()
@@ -634,7 +634,7 @@ def _run_wsl(cmd: str, timeout: int = 120) -> str:
             full_cmd = [wsl_exe, "-d", WSL_DISTRO, "--", "bash", "-c", cmd]
             r = subprocess.run(
                 full_cmd,
-                capture_output=True, text=True, timeout=timeout,
+                capture_output=True, text=True, encoding="utf-8", timeout=timeout,
             )
             out = (r.stdout or "").strip()
             err = (r.stderr or "").strip()
@@ -676,7 +676,7 @@ def _run_powershell(cmd: str, params: dict = None) -> str:
             r = subprocess.run(
                 [ps_cmd, "-NoProfile", "-ExecutionPolicy", "Bypass",
                  "-File", str(PS_KIT), cmd, params_json],
-                capture_output=True, text=True,
+                capture_output=True, text=True, encoding="utf-8",
                 encoding='utf-8', errors='replace',
                 timeout=120,
             )
