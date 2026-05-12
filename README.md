@@ -1612,30 +1612,62 @@ cyber_reasoning(action="report")
 
 ### 🔒 Cybersecurity Confirmation Protocol
 
-FRIDAY requires user confirmation before performing active cyber operations. This is a safety gate to prevent accidental or unauthorized scanning.
+FRIDAY includes an **authorization gate** for all live cyber operations. Cyber features are **disabled by default** — users must explicitly enable them in config, then authorize each target before any network activity occurs.
 
-| Tier | Operations | Confirmation |
-|------|-----------|-------------|
-| **Tier 1** | Passive recon (WHOIS, DNS, subfinder), local code analysis (mythos_scan), header checks | ❌ Not needed |
-| **Tier 2** | Active scanning (nmap, nuclei, ffuf, sqlmap, gobuster), injection testing, CORS testing | ✅ Type `confirm` |
-| **Tier 3** | Active exploitation, privilege escalation, post-exploitation | ✅ `confirm` + explicit go-ahead |
+**Two-layer safety:**
 
-**How it works:**
+| Layer | What it does | How to bypass |
+|-------|-------------|---------------|
+| **Layer 1: Config gate** | Cyber features completely disabled | Set `"cyber_enabled": true` in `config/api_keys.json` |
+| **Layer 2: Authorization gate** | Live operations blocked per-target | Type the consent phrase (see below) |
+
+**Authorization flow:**
 
 ```
 You:    "Scan example.com for vulnerabilities"
-FRIDAY: "Right, Sir. I'll run subfinder for subdomains, httpx to probe
-         live hosts, then nuclei for vuln scanning on example.com.
-         This will send active requests to the target.
-         Type `confirm` to proceed."
-You:    "confirm"
+FRIDAY: "Authorization required for 'port_scan' on 'example.com'.
+
+         This operation involves network activity and requires your explicit consent.
+         To authorize, type exactly:
+           I have written authorization to test this target
+
+         Then re-run the command.
+         Authorization is valid for 24 hours and logged for audit.
+
+         Note: Static analysis operations (source code scanning) do not require authorization."
+You:    "I have written authorization to test this target"
+FRIDAY: "Authorization granted for 'example.com'. Valid for 24 hours. Logged to: config/consent_log.json"
+You:    "Scan example.com"
 FRIDAY: *runs the scan*
 ```
 
-- Confirmation is **per-action-group** (one confirm covers a planned chain of tools)
-- Say "no confirmation needed" or "just do it" to skip for a specific task
-- Passive recon (OSINT, DNS, subdomain enum) runs immediately without confirmation
-- Local code analysis (mythos_scan on your own files) runs without confirmation
+**What requires authorization:**
+- All network operations (port scanning, subdomain enum, web fuzzing, etc.)
+- Exploit validation and business logic testing
+- Any operation that sends requests to external targets
+
+**What does NOT require authorization:**
+- Static analysis of local source code (mythos_scan on your own files)
+- Data flow analysis on local files
+- Tool health checks, WSL debugging
+
+**Authorization details:**
+- Consent is **per-target** — each URL/IP/domain needs its own authorization
+- Consent **expires after 24 hours** — must re-authorize after expiry
+- All consent grants are **logged to `config/consent_log.json`** with timestamp for audit trail
+- Consent can be revoked at any time via `security_tools(action="revoke", target="...")`
+
+**Managing authorizations:**
+```bash
+# View active authorizations
+security_tools(action="authorize")
+
+# Revoke a specific target
+security_tools(action="revoke", target="example.com")
+
+# Revoke all authorizations
+security_tools(action="revoke")
+```
 
 ### Voice Control
 ```bash

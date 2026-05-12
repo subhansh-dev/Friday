@@ -6,6 +6,10 @@ Orchestrates ALL cyber modules into a single end-to-end pipeline:
   RECON → HUNTER → DATA_FLOW → ADVERSARIAL → EXPLOIT → BUSINESS_LOGIC → CORRELATE → TRIAGE → REPORT
 
 This is the bridge between the dead cyber modules and main.py.
+
+Live operations (network scanning, exploit validation) require explicit
+user authorization via cyber/authorization.py. Static analysis of local
+code is always allowed without authorization.
 """
 
 import json
@@ -16,6 +20,7 @@ from pathlib import Path
 from typing import Optional, List
 
 from brain.findings_bus import get_findings_bus
+from cyber.authorization import require_authorization, is_authorized, AuthorizationError
 
 logger = logging.getLogger("friday.pipeline")
 
@@ -71,21 +76,42 @@ class CyberPipeline:
         # Clear the findings bus for this run
         self.bus.prune()
 
-        # Phase 1: Static Analysis (Mythos Pipeline)
+        # Phase 1: Static Analysis (Mythos Pipeline) — always allowed (local files only)
         self._phase_static_analysis(target, result)
 
-        # Phase 2: Data Flow Analysis
+        # Phase 2: Data Flow Analysis — always allowed (local files only)
         if scan_type == "full":
             self._phase_data_flow(target, result)
 
-        # Phase 3: Cognitive Reasoning (chain building, verification, grading)
+        # Phase 3: Cognitive Reasoning (chain building, verification, grading) — local
         self._phase_cognitive_reasoning(target, result)
 
-        # Phase 4: Exploit Validation (if we have a URL)
+        # ── Authorization gate for live (network) operations ──
+        _needs_live_auth = bool(target_url and scan_type == "full")
+        if _needs_live_auth:
+            try:
+                require_authorization(target_url, "exploit_validation")
+            except AuthorizationError as e:
+                result.phases_run.append("AUTHORIZATION_REQUIRED")
+                result.report = (
+                    "Authorization required for live operations.\n\n"
+                    f"Target: {target_url}\n\n"
+                    f"To authorize, type exactly:\n"
+                    f"  I have written authorization to test this target\n\n"
+                    f"Then re-run the scan.\n\n"
+                    f"Static analysis results (no authorization needed) are included below.\n"
+                    f"{'=' * 60}\n"
+                )
+                # Still generate report for static findings
+                result.report += self._generate_report(result)
+                result.duration_ms = (time.time() - start) * 1000
+                return result
+
+        # Phase 4: Exploit Validation (if we have a URL) — REQUIRES AUTH
         if target_url and scan_type == "full":
             self._phase_exploit_validation(target_url, result)
 
-        # Phase 5: Business Logic Testing (if we have a URL)
+        # Phase 5: Business Logic Testing (if we have a URL) — REQUIRES AUTH
         if target_url and scan_type == "full":
             self._phase_business_logic(target_url, result)
 

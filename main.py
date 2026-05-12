@@ -651,6 +651,20 @@ try:
 except Exception:
     pass
 
+# ── Cyber authorization (consent gate for live operations) ──
+_cyber_auth_manager = None
+if _cyber_enabled:
+    try:
+        from cyber.authorization import (
+            get_auth_manager as _get_auth_manager,
+            grant_consent as _grant_consent,
+            is_live_operation as _is_live_op,
+            CONSENT_PHRASE as _CONSENT_PHRASE,
+        )
+        _cyber_auth_manager = _get_auth_manager()
+    except ImportError:
+        pass
+
 if _cyber_enabled:
     try:
         from actions.security_tools import security_tools
@@ -4604,6 +4618,55 @@ class FridayLive:
             if not _cyber_enabled:
                 return "Cyber features are disabled. Set \"cyber_enabled\": true in config/api_keys.json to enable."
             return "Security tools module not installed."
+
+        # ── Authorization gate for live cyber operations ──
+        if _cyber_auth_manager:
+            action = args.get("action", "") if args else ""
+            target = args.get("target", "") if args else ""
+
+            # Handle consent grant command
+            if action == "authorize":
+                if not target:
+                    active = _cyber_auth_manager.get_active_consents()
+                    if active:
+                        lines = ["Active authorizations:"]
+                        for c in active:
+                            lines.append(f"  • {c['target']} (expires in {c['expires_in_hours']}h)")
+                        return "\n".join(lines)
+                    return "No active authorizations. Use action='authorize' with target and consent_phrase to grant."
+
+                phrase = args.get("consent_phrase", "")
+                if not phrase:
+                    return (
+                        f"To authorize live operations on '{target}', type exactly:\n"
+                        f"  {_CONSENT_PHRASE}\n\n"
+                        f"Pass it as consent_phrase parameter."
+                    )
+                ok, msg = _grant_consent(target, phrase)
+                return msg
+
+            # Handle revoke command
+            if action == "revoke":
+                if target:
+                    revoked = _cyber_auth_manager.revoke_consent(target)
+                    return f"Consent revoked for '{target}'." if revoked else f"No active consent for '{target}'."
+                else:
+                    count = _cyber_auth_manager.revoke_all()
+                    return f"All consents revoked ({count} targets)."
+
+            # Check if this is a live operation that needs authorization
+            if _is_live_op(action) and target:
+                if not _cyber_auth_manager.is_authorized(target):
+                    return (
+                        f"Authorization required for '{action}' on '{target}'.\n\n"
+                        f"This operation involves network activity and requires your explicit consent.\n"
+                        f"To authorize, type exactly:\n"
+                        f"  {_CONSENT_PHRASE}\n\n"
+                        f"Then re-run the command.\n"
+                        f"Authorization is valid for 24 hours and logged for audit.\n\n"
+                        f"Note: Static analysis operations (source code scanning) do not require authorization."
+                    )
+
         # v10.6 — streaming: player is passed through for real-time output
         r = await self._run_long_tool_with_timeout(
             lambda: security_tools(parameters=args, player=self.ui), timeout=300)
