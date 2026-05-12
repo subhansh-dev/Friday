@@ -1561,40 +1561,33 @@ source friday_env/bin/activate
 ### Step 3 — Install dependencies
 
 ```bash
+# Core only (works on Python 3.12, 3.13, 3.14)
 pip install -r requirements.txt
+
+# Install specific optional features:
+python setup.py --extras gestures    # Hand gesture control (Python 3.12 only)
+python setup.py --extras ai          # AI pipeline + vector memory
+python setup.py --extras ac          # AC control (LG, Daikin, Mitsubishi, Hitachi)
+python setup.py --extras cloud       # AWS + Azure + Redis
+python setup.py --extras security    # DNS + crypto for cyber tools
+python setup.py --extras windows     # Windows-specific features
+
+# Or install everything:
+python setup.py --all
 ```
 
-This installs all **core dependencies** and works on Python 3.12, 3.13, and 3.14.
+**Optional feature groups:**
 
-**Optional:** Install additional features as needed:
+| Group | What it installs | Python 3.13+? |
+|-------|-----------------|---------------|
+| `gestures` | TensorFlow, MediaPipe, scikit-learn | ❌ 3.12 only |
+| `ai` | LangChain, sentence-transformers, HuggingFace | ✅ |
+| `ac` | Broadlink, pydaikin, pymelcloud, aircloudy, thinq2 | ✅ |
+| `cloud` | boto3, Azure SDK, Redis | ✅ |
+| `security` | dnspython, cryptography | ✅ |
+| `windows` | pywin32, pycaw, pygetwindow, etc. | ✅ (Windows only) |
 
-```bash
-# Gesture ML (Python 3.12 only — TensorFlow has no 3.13+ wheels)
-pip install tensorflow mediapipe scikit-learn
-
-# AI pipeline (LangChain chains)
-pip install langchain langgraph tiktoken
-
-# Vector memory & benchmarks (sentence-transformers)
-pip install sentence-transformers huggingface-hub datasets
-
-# AC control (pick your brand)
-pip install thinq2          # LG
-pip install pydaikin        # Daikin
-pip install broadlink       # IR-based
-
-# Cloud services
-pip install boto3           # AWS
-pip install azure-storage-blob azure-identity  # Azure
-```
-
-Or install everything at once (may fail on Python 3.13+):
-
-```bash
-pip install -r requirements-optional.txt
-```
-
-> **⚠️ Python 3.13/3.14 Users:** TensorFlow and MediaPipe don't have wheels yet. The gesture music system and some holo features require these. Everything else works fine. Skip those packages if you're on 3.13+.
+> **⚠️ Python 3.13/3.14 Users:** Skip the `gestures` group — TensorFlow has no wheels yet. Everything else works.
 
 ### Step 4 — Install Playwright browsers
 
