@@ -33,6 +33,12 @@
 > - Educational purposes in controlled environments
 > - Defensive security operations on your own infrastructure
 >
+> **Built-in Safety System:** Friday includes a **target guard** that automatically classifies targets:
+> - **Local targets** (localhost, private IPs, .local domains) — always allowed, no authorization needed
+> - **External targets** — require explicit typed consent confirming ownership or authorization
+> - **Cloud metadata endpoints** (169.254.169.254, etc.) — **always blocked**, no exceptions
+> - All authorization decisions are logged to an **audit trail** for compliance
+>
 > **The creator (Subhansh) does NOT take any responsibility for:**
 > - Any illegal or unauthorized use of F.R.I.D.A.Y.
 > - Any damage, data loss, or legal consequences caused by users cloning or using this software
@@ -44,7 +50,7 @@
 > - You accept FULL responsibility for any consequences of your actions
 > - The creator cannot be held liable for any misuse
 >
-> See the [Legal Disclaimer & Warning](#%EF%B8%8F-legal-disclaimer--warning) section for complete details.
+> See [LEGAL.md](LEGAL.md) for full legal disclaimers and applicable laws.
 
 ---
 
@@ -767,7 +773,7 @@ User Goal → [Perceive] → [Plan] → [Simulate] → [Execute] → [Debug] →
 
 ## 🛡️ Cybersecurity Pipeline (Optional Module)
 
-F.R.I.D.A.Y. includes an **optional multi-layered security architecture** with 39 Python files totaling **12,100+ lines** across `cyber/`, `brain/cyber_reasoning.py`, and `actions/security_tools.py`. Inspired by [Bounty Hunter](https://github.com/deonmenezes/bountyhunter) (multi-agent bug bounty framework) and [Shannon](https://github.com/KeygraphHQ/shannon) (autonomous AI pentester, 20K+ stars).
+F.R.I.D.A.Y. includes an **optional multi-layered security architecture** with 41 Python files totaling **13,200+ lines** across `cyber/`, `brain/cyber_reasoning.py`, and `actions/security_tools.py`. Inspired by [Bounty Hunter](https://github.com/deonmenezes/bountyhunter) (multi-agent bug bounty framework) and [Shannon](https://github.com/KeygraphHQ/shannon) (autonomous AI pentester, 20K+ stars).
 
 > **Note:** This is one of many capabilities — Friday's core purpose is general-purpose autonomous cognition (research, creativity, document analysis, coding, system control). Security features are opt-in and require explicit user confirmation before active operations.
 
@@ -779,14 +785,30 @@ F.R.I.D.A.Y. includes an **optional multi-layered security architecture** with 3
 ┌─────────────────────────────────────────────────────────────────┐
 │                    FRIDAY Cyber Stack                             │
 ├─────────────────────────────────────────────────────────────────┤
-│  cyber/agents/         │  7 specialized security agents          │
-│  cyber/exploit_templates/ │ 9 vuln-class exploit templates       │
-│  cyber/                │  Engine, FSM, data flow, business logic │
+│  cyber/target_guard.py   │  Target classification & access control│
+│  cyber/authorization.py  │  Two-layer auth (guard + consent gate) │
+│  cyber/agents/           │  7 specialized security agents         │
+│  cyber/exploit_templates/│  9 vuln-class exploit templates        │
+│  cyber/                  │  Engine, FSM, data flow, business logic│
 ├─────────────────────────────────────────────────────────────────┤
 │  Pipeline: RECON → HUNT → CHAIN → VERIFY → GRADE → REPORT       │
 │  Modes: fast / standard / deep / loop / code                     │
+│  Auth: localhost=free · external=consent · metadata=blocked      │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+### Target Guard (`cyber/target_guard.py`) — Access Control Layer
+
+Every cyber operation passes through the target guard first:
+
+| Classification | Examples | Behavior |
+|---------------|----------|----------|
+| **Local** | localhost, 127.0.0.1, 10.x, 192.168.x, .local domains | ✅ Always allowed — testing your own stuff |
+| **Owned** | External targets with confirmed ownership | ✅ Allowed for 24 hours after consent |
+| **Blocked** | 169.254.169.254, metadata.google.internal | 🚫 Always blocked — no exceptions |
+| **Unknown** | Any external target without consent | 🔒 Requires typed consent phrase |
+
+**Audit trail:** Every target validation decision is logged to `data/audit_log.json` with timestamp, target, operation, decision, and reason.
 
 ### 1. Agent Architecture (`cyber/agents/`) — 7 Specialized Agents
 
@@ -922,11 +944,17 @@ WSL/Kali integration with real-time streaming output:
 
 ### Security Boundaries
 
-F.R.I.D.A.Y. **will NEVER target**:
-- localhost / 127.0.0.1
-- Local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
-- The user's own machine
-- Friday's own API server
+F.R.I.D.A.Y. enforces **target-level access control** via `cyber/target_guard.py`:
+
+| Target Type | Behavior |
+|-------------|----------|
+| **localhost / 127.0.0.1** | ✅ Always allowed — no auth needed |
+| **Private IPs** (10.x, 192.168.x, 172.16-31.x) | ✅ Always allowed — your own network |
+| **.local domains** (mDNS/Bonjour) | ✅ Always allowed — local services |
+| **External targets** | 🔒 Requires typed consent: *"I own this target or have written authorization to test it"* |
+| **Cloud metadata** (169.254.169.254, metadata.google.internal) | 🚫 **Always blocked** — no consent possible |
+
+Authorization is enforced at **every layer** — pipeline, security tools, individual agents, and exploit engine. All decisions logged to `data/audit_log.json`. See [LEGAL.md](LEGAL.md) for full legal disclaimers.
 
 ---
 
@@ -1247,6 +1275,7 @@ friday/
 ├── SOUL.md                    # Identity and behavioral guidelines
 ├── AGENTS.md                  # Workspace conventions
 ├── TOOLS.md                   # Local environment notes
+├── LEGAL.md                   # Legal disclaimers & compliance
 ├── COGNITIVE_CODING_ENGINE_README.md # Cognitive coding docs
 │
 ├── brain/                     # 🧠 Cognitive systems (32,891 lines)
@@ -1324,7 +1353,9 @@ friday/
 │   ├── ac_controller.py       #   Air conditioner control (552 lines)
 │   └── open_app.py            #   Application launcher (376 lines)
 │
-├── cyber/                     # 🛡️ Cyber Security Toolkit (9,600+ lines)
+├── cyber/                     # 🛡️ Cyber Security Toolkit (10,700+ lines)
+│   ├── target_guard.py        #   Target classification & access control
+│   ├── authorization.py       #   Two-layer auth (guard + consent gate)
 │   ├── agents/                #   7 specialized security agents
 │   │   ├── recon_agent.py     #     Subdomain enum, port scanning, tech detection
 │   │   ├── hunter_agent.py    #     Vuln hunting (code + dynamic)
@@ -1612,31 +1643,41 @@ cyber_reasoning(action="report")
 
 ### 🔒 Cybersecurity Confirmation Protocol
 
-FRIDAY includes an **authorization gate** for all live cyber operations. Cyber features are **disabled by default** — users must explicitly enable them in config, then authorize each target before any network activity occurs.
+FRIDAY includes a **two-layer authorization system** for all live cyber operations. Cyber features are **disabled by default** — users must explicitly enable them in config, then authorize each external target before any network activity occurs.
 
 **Two-layer safety:**
 
 | Layer | What it does | How to bypass |
 |-------|-------------|---------------|
 | **Layer 1: Config gate** | Cyber features completely disabled | Set `"cyber_enabled": true` in `config/api_keys.json` |
-| **Layer 2: Authorization gate** | Live operations blocked per-target | Type the consent phrase (see below) |
+| **Layer 2: Target guard** | Classifies targets as local/owned/blocked/unknown | Local targets are free; external require consent |
+| **Layer 3: Consent gate** | Per-target typed authorization | Type the consent phrase (see below) |
+
+**Target classification:**
+
+| Target Type | Example | Auth Required? |
+|-------------|---------|---------------|
+| Localhost | `localhost`, `127.0.0.1` | ❌ No — always allowed |
+| Private IP | `192.168.1.1`, `10.0.0.1` | ❌ No — your own network |
+| .local domain | `my-app.local` | ❌ No — local service |
+| External | `example.com`, `http://target.com` | ✅ Yes — typed consent required |
+| Cloud metadata | `169.254.169.254` | 🚫 Blocked — no exceptions |
 
 **Authorization flow:**
 
 ```
 You:    "Scan example.com for vulnerabilities"
-FRIDAY: "Authorization required for 'port_scan' on 'example.com'.
+FRIDAY: "🔒 External target: 'example.com'
 
-         This operation involves network activity and requires your explicit consent.
-         To authorize, type exactly:
-           I have written authorization to test this target
+         Friday's cyber tools are designed for testing your own systems.
+         To proceed, you must confirm you own this target or have written authorization.
 
-         Then re-run the command.
-         Authorization is valid for 24 hours and logged for audit.
+         Type exactly:
+           I own this target or have written authorization to test it
 
-         Note: Static analysis operations (source code scanning) do not require authorization."
-You:    "I have written authorization to test this target"
-FRIDAY: "Authorization granted for 'example.com'. Valid for 24 hours. Logged to: config/consent_log.json"
+         ⚠️  Unauthorized scanning is illegal in most jurisdictions."
+You:    "I own this target or have written authorization to test it"
+FRIDAY: "✅ Authorization granted for 'example.com'. Valid for 24 hours. Logged to audit trail."
 You:    "Scan example.com"
 FRIDAY: *runs the scan*
 ```
@@ -1649,25 +1690,22 @@ FRIDAY: *runs the scan*
 **What does NOT require authorization:**
 - Static analysis of local source code (mythos_scan on your own files)
 - Data flow analysis on local files
-- Tool health checks, WSL debugging
+- Tool health checks, utility functions
 
 **Authorization details:**
 - Consent is **per-target** — each URL/IP/domain needs its own authorization
 - Consent **expires after 24 hours** — must re-authorize after expiry
-- All consent grants are **logged to `config/consent_log.json`** with timestamp for audit trail
-- Consent can be revoked at any time via `security_tools(action="revoke", target="...")`
+- All consent grants are **logged to `data/audit_log.json`** with timestamp for audit trail
+- Consent can be revoked at any time
 
-**Managing authorizations:**
-```bash
-# View active authorizations
-security_tools(action="authorize")
-
-# Revoke a specific target
-security_tools(action="revoke", target="example.com")
-
-# Revoke all authorizations
-security_tools(action="revoke")
-```
+**Auth is enforced at every layer:**
+- `pipeline.run()` — checks before running exploit validation
+- `security_tools()` — checks before all 25+ network actions
+- `ReconAgent` — checks before nmap/subfinder
+- `ExploitAgent` — checks before PoC execution
+- `HunterAgent` — checks before dynamic scans (nuclei/ffuf)
+- `ExploitEngine` — checks before exploit execution
+- `BusinessLogicTester` — checks before live HTTP requests
 
 ### Voice Control
 ```bash
@@ -1681,6 +1719,8 @@ voice_control(voice="puck")
 
 ### CRITICAL — READ CAREFULLY BEFORE USING
 
+> **Full legal disclaimers, applicable laws, and compliance information are in [LEGAL.md](LEGAL.md).**
+
 **F.R.I.D.A.Y. CONTAINS ADVANCED CYBERSECURITY CAPABILITIES INCLUDING:**
 
 - Multi-agent vulnerability scanning (Mythos 7-agent pipeline)
@@ -1690,6 +1730,8 @@ voice_control(voice="puck")
 - CVSS scoring and severity assessment
 - Supply chain security scanning
 - Penetration testing tool integration (nmap, nuclei, ffuf, sqlmap, etc.)
+- **Target guard** — automatic target classification and access control
+- **Audit logging** — all authorization decisions recorded
 
 ### ⚡ INTENDED USE ONLY
 
@@ -1738,11 +1780,12 @@ This software is intended **EXCLUSIVELY** for:
    - Attempting any form of exploitation
    - Accessing any system you do not own
 
-5. **Local Machine Protection** — F.R.I.D.A.Y. is programmed to refuse targeting:
-   - localhost / 127.0.0.1
-   - Your local machine's IP addresses
-   - Your home network (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
-   - Any system without authorization
+5. **Built-in Protections** — F.R.I.D.A.Y. includes automated safeguards:
+   - **Target guard** classifies and restricts where tools can aim
+   - **Cloud metadata endpoints** are always blocked
+   - **External targets** require typed consent with ownership confirmation
+   - **All operations** are logged to an audit trail
+   - These protections can be bypassed by modifying the source code — doing so is your responsibility
 
 ### 🔒 SECURITY ETHICS
 
@@ -1752,6 +1795,18 @@ If you encounter security vulnerabilities while using this tool:
 - **DO** report them to the system owner/vendor
 - **DO** follow responsible disclosure practices
 - **DO NOT** share sensitive findings publicly without coordination
+
+### 📋 APPLICABLE LAWS
+
+Unauthorized access to computer systems is illegal in most jurisdictions. Key laws include:
+
+- **United States:** Computer Fraud and Abuse Act (CFAA), 18 U.S.C. § 1030
+- **United Kingdom:** Computer Misuse Act 1990
+- **European Union:** Directive 2013/40/EU
+- **China:** Criminal Law Articles 285-287
+- **India:** Information Technology Act 2000, Section 43 & 66
+
+See [LEGAL.md](LEGAL.md) for the complete list.
 
 ---
 
